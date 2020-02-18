@@ -1,0 +1,17 @@
+<resources>
+
+	<string name="error_unknown">Неочікувана помилка</string>
+	<string name="error_cant_create_file">Не вдалося створити файл</string>
+	<string name="error_invalid_output_file">Направильний вихідний файл</string>
+	<string name="error_file_exists">Файл з таким ім\'ям вже існує!</string>
+	<string name="error_failed_to_rename">Не вдалося переіменувати запис!</string>
+	<string name="error_failed_to_init_recorder">Помилка під час ініціалізації Записувача!</string>
+	<string name="error_failed_to_init_player">Помилка під час ініціалізації Програвача</string>
+	<string name="error_player_data_source">Програвач не може зчитати запис</string>
+	<string name="error_unable_to_read_sound_file">Не вдалося зчитати аудіо файл</string>
+	<string name="error_permission_denied">Доступ заборонено</string>
+	<string name="error_process_waveform">Не вдалося відобразити аудіофайл</string>
+	<string name="error_lost_records">Деякі ваші записи були видалені або переміщені</string>
+	<string name="error_no_available_space">Немає доступної пам\'яті</string>
+
+</resources>

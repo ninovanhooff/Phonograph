@@ -1,0 +1,17 @@
+<resources>
+
+	<string name="error_unknown">Неожиданная ошибка</string>
+	<string name="error_cant_create_file">Не удалось создать файл</string>
+	<string name="error_invalid_output_file">Неверный выходной файл</string>
+	<string name="error_file_exists">Файл с таким именем уже существует!</string>
+	<string name="error_failed_to_rename">Ошибка при переименовании записи!</string>
+	<string name="error_failed_to_init_recorder">Не удалось инициализировать рекордер</string>
+	<string name="error_failed_to_init_player">Не удалось инициализировать проигрыватель</string>
+	<string name="error_player_data_source">Проигрыватель не может считать файл</string>
+	<string name="error_unable_to_read_sound_file">Не удалось считать аудио файл</string>
+	<string name="error_permission_denied">Доступ запрещен</string>
+	<string name="error_process_waveform">Не удалось отобразить аудиофайл</string>
+	<string name="error_lost_records">Некоторые ваши записи были удалены или перемещены</string>
+	<string name="error_no_available_space">Нет доступной памяти!</string>
+
+</resources>

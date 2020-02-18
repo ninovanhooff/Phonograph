@@ -20,8 +20,8 @@ import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 
-import com.dimowner.audiorecorder.ARApplication;
-import com.dimowner.audiorecorder.AppConstants;
+import com.dimowner.audiorecorder.Phonograph;
+import com.dimowner.audiorecorder.PhonographConstants;
 import com.dimowner.audiorecorder.exception.InvalidOutputFile;
 import com.dimowner.audiorecorder.exception.RecorderInitException;
 
@@ -35,7 +35,7 @@ import java.util.TimerTask;
 
 import timber.log.Timber;
 
-import static com.dimowner.audiorecorder.AppConstants.VISUALIZATION_INTERVAL;
+import static com.dimowner.audiorecorder.PhonographConstants.VISUALIZATION_INTERVAL;
 
 public class WavRecorder implements RecorderContract.Recorder {
 
@@ -59,7 +59,7 @@ public class WavRecorder implements RecorderContract.Recorder {
 	private Timer timerProgress;
 	private long progress = 0;
 
-	private int sampleRate = AppConstants.RECORD_SAMPLE_RATE_44100;
+	private int sampleRate = PhonographConstants.RECORD_SAMPLE_RATE_44100;
 
 	private RecorderContract.RecorderCallback recorderCallback;
 
@@ -157,7 +157,7 @@ public class WavRecorder implements RecorderContract.Recorder {
 					if (recorderCallback != null) {
 						recorderCallback.onStartRecord();
 					}
-					ARApplication.setRecording(true);
+					Phonograph.setRecording(true);
 				} catch (IllegalStateException e) {
 					Timber.e(e, "startRecording() failed");
 					if (recorderCallback != null) {
@@ -190,7 +190,7 @@ public class WavRecorder implements RecorderContract.Recorder {
 			if (recorder.getState() == AudioRecord.STATE_INITIALIZED) {
 				try {
 					recorder.stop();
-					ARApplication.setRecording(false);
+					Phonograph.setRecording(false);
 				} catch (IllegalStateException e) {
 					Timber.e(e, "stopRecording() problems");
 				}
@@ -214,7 +214,7 @@ public class WavRecorder implements RecorderContract.Recorder {
 	}
 
 	private void writeAudioDataToFile() {
-		byte data[] = new byte[bufferSize];
+		byte[] data = new byte[bufferSize];
 
 		FileOutputStream fos;
 		try {
@@ -262,8 +262,6 @@ public class WavRecorder implements RecorderContract.Recorder {
 			wavFile.seek(0); // to the beginning
 			wavFile.write(generateHeader(fileSize, totalSize, sampleRate, channels, byteRate));
 			wavFile.close();
-		} catch (FileNotFoundException e) {
-			Timber.e(e);
 		} catch (IOException e) {
 			Timber.e(e);
 		}

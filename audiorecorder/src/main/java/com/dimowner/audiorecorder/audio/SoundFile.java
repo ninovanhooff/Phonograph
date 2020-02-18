@@ -20,8 +20,8 @@ import android.media.MediaCodec;
 import android.media.MediaExtractor;
 import android.media.MediaFormat;
 
-import com.dimowner.audiorecorder.ARApplication;
-import com.dimowner.audiorecorder.AppConstants;
+import com.dimowner.audiorecorder.Phonograph;
+import com.dimowner.audiorecorder.PhonographConstants;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -43,7 +43,7 @@ public class SoundFile {
 
 	private boolean isFailed = false;
 
-	private float dpPerSec = AppConstants.SHORT_RECORD_DP_PER_SECOND;
+	private float dpPerSec = PhonographConstants.SHORT_RECORD_DP_PER_SECOND;
 	private int mFileSize;
 	private int mSampleRate;
 	private int mChannels;
@@ -66,7 +66,7 @@ public class SoundFile {
 	}
 
 	// Create and return a SoundFile object using the file fileName.
-	public static SoundFile create(String fileName) throws IOException, OutOfMemoryError, IllegalStateException, FileNotFoundException {
+	public static SoundFile create(String fileName) throws IOException, OutOfMemoryError, IllegalStateException {
 		// First check that the file exists and that its extension is supported.
 		File f = new File(fileName);
 		if (!f.exists()) {
@@ -87,16 +87,11 @@ public class SoundFile {
 
 	// Should be removed when the app will use directly the samples instead of the frames.
 	public int getSamplesPerFrame() {
-		return calculateSamplesPerFrame();
+		return (int)(mSampleRate / dpPerSec);
 	}
 
 	public long getDuration() {
 		return duration;
-	}
-
-	private int calculateSamplesPerFrame() {
-//		return mSampleRate / AppConstants.PIXELS_PER_SECOND;
-		return (int)(mSampleRate / dpPerSec);
 	}
 
 	// Should be removed when the app will use directly the samples instead of the frames.
@@ -137,7 +132,7 @@ public class SoundFile {
 		} catch (Exception e) {
 			Timber.e(e);
 		}
-		dpPerSec = ARApplication.getDpPerSecond((float) duration/1000000f);
+		dpPerSec = Phonograph.getWaveformDpPerSecond((float) duration/1000000f);
 
 		MediaCodec codec = MediaCodec.createDecoderByType(format.getString(MediaFormat.KEY_MIME));
 		codec.configure(format, null, null, 0);
@@ -229,7 +224,7 @@ public class SoundFile {
 					if (retry == 0) {
 						// Failed to allocate memory... Stop reading more data and finalize the
 						// instance with the data decoded so far.
-						mFrameGains = new int[ARApplication.getLongWaveformSampleCount()];
+						mFrameGains = new int[Phonograph.getLongWaveformSampleCount()];
 						isFailed = true;
 						break;
 					}
@@ -299,7 +294,6 @@ public class SoundFile {
 				mFrameGains[i] = (int) Math.sqrt(gain);  // here gain = sqrt(max value of 1st channel)...
 			}
 			mDecodedSamples.rewind();
-			// DumpSamples();  // Uncomment this line to dump the samples in a TSV file.
 		}
 	}
 }

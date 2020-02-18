@@ -19,7 +19,7 @@ package com.dimowner.audiorecorder.audio.player;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 
-import com.dimowner.audiorecorder.AppConstants;
+import com.dimowner.audiorecorder.PhonographConstants;
 import com.dimowner.audiorecorder.exception.AppException;
 import com.dimowner.audiorecorder.exception.PermissionDeniedException;
 import com.dimowner.audiorecorder.exception.PlayerDataSourceException;
@@ -149,7 +149,7 @@ public class AudioPlayer implements PlayerContract.Player, MediaPlayer.OnPrepare
 									Timber.e(e, "Player is not initialized!");
 								}
 							}
-						}, 0, AppConstants.VISUALIZATION_INTERVAL);
+						}, 0, PhonographConstants.VISUALIZATION_INTERVAL);
 					}
 					pausePos = 0;
 				}
@@ -192,7 +192,7 @@ public class AudioPlayer implements PlayerContract.Player, MediaPlayer.OnPrepare
 					Timber.e(e, "Player is not initialized!");
 				}
 			}
-		}, 0, AppConstants.VISUALIZATION_INTERVAL);
+		}, 0, PhonographConstants.VISUALIZATION_INTERVAL);
 	}
 
 	@Override

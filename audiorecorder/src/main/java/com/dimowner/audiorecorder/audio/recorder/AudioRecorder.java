@@ -19,7 +19,7 @@ package com.dimowner.audiorecorder.audio.recorder;
 import android.media.MediaRecorder;
 import android.os.Build;
 
-import com.dimowner.audiorecorder.ARApplication;
+import com.dimowner.audiorecorder.Phonograph;
 import com.dimowner.audiorecorder.exception.InvalidOutputFile;
 import com.dimowner.audiorecorder.exception.RecorderInitException;
 
@@ -30,8 +30,7 @@ import java.util.TimerTask;
 
 import timber.log.Timber;
 
-import static com.dimowner.audiorecorder.AppConstants.RECORD_MAX_DURATION;
-import static com.dimowner.audiorecorder.AppConstants.VISUALIZATION_INTERVAL;
+import static com.dimowner.audiorecorder.PhonographConstants.VISUALIZATION_INTERVAL;
 
 public class AudioRecorder implements RecorderContract.Recorder {
 
@@ -118,7 +117,7 @@ public class AudioRecorder implements RecorderContract.Recorder {
 				try {
 					recorder.start();
 					isRecording = true;
-					ARApplication.setRecording(true);
+					Phonograph.setRecording(true);
 					startRecordingTimer();
 					if (recorderCallback != null) {
 						recorderCallback.onStartRecord();
@@ -166,7 +165,7 @@ public class AudioRecorder implements RecorderContract.Recorder {
 			stopRecordingTimer();
 			try {
 				recorder.stop();
-				ARApplication.setRecording(false);
+				Phonograph.setRecording(false);
 			} catch (RuntimeException e) {
 				Timber.e(e, "stopRecording() problems");
 			}

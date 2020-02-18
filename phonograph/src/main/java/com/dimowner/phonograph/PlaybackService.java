@@ -1,4 +1,4 @@
-package com.dimowner.audiorecorder.app;
+package com.dimowner.phonograph;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -16,10 +16,6 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
-import com.dimowner.audiorecorder.ARApplication;
-import com.dimowner.audiorecorder.ColorMap;
-import com.dimowner.audiorecorder.R;
-import com.dimowner.audiorecorder.app.main.MainActivity;
 import com.dimowner.phonograph.audio.player.PlayerContract;
 import com.dimowner.phonograph.exception.AppException;
 
@@ -54,7 +50,7 @@ public class PlaybackService extends Service {
 
 	private PlayerContract.Player audioPlayer;
 	private PlayerContract.PlayerCallback playerCallback;
-	private ColorMap colorMap;
+	private PhonographColorMap colorMap;
 
 	public PlaybackService() {
 	}
@@ -68,8 +64,8 @@ public class PlaybackService extends Service {
 	public void onCreate() {
 		super.onCreate();
 
-		audioPlayer = ARApplication.getInjector().provideAudioPlayer();
-		colorMap = ARApplication.getInjector().provideColorMap();
+		audioPlayer = Phonograph.getInjector().provideAudioPlayer();
+		colorMap = Phonograph.getInjector().provideColorMap();
 	}
 
 	@Override
@@ -156,7 +152,7 @@ public class PlaybackService extends Service {
 //		remoteViewsBig.setInt(R.id.container, "setBackgroundColor", this.getResources().getColor(colorMap.getPrimaryColorRes()));
 
 		// Create notification default intent.
-		Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+		Intent intent = new Intent(getApplicationContext(), Phonograph.getActivityClass());
 		intent.setFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
 		PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
 
@@ -165,7 +161,7 @@ public class PlaybackService extends Service {
 
 		builder.setWhen(System.currentTimeMillis());
 		builder.setContentTitle(getResources().getString(R.string.app_name));
-		builder.setSmallIcon(R.drawable.ic_play_circle);
+		builder.setSmallIcon(R.drawable.ic_phonograph_play_circle);
 		builder.setPriority(Notification.PRIORITY_MAX);
 		// Make head-up notification.
 		builder.setContentIntent(pendingIntent);
@@ -212,8 +208,8 @@ public class PlaybackService extends Service {
 	public void onPausePlayback() {
 //		if (remoteViewsBig != null && remoteViewsSmall != null) {
 		if (remoteViewsSmall != null) {
-//			remoteViewsBig.setImageViewResource(R.id.btn_pause, R.drawable.ic_play);
-			remoteViewsSmall.setImageViewResource(R.id.btn_pause, R.drawable.ic_play);
+//			remoteViewsBig.setImageViewResource(R.id.btn_pause, R.drawable.ic_phonograph_play);
+			remoteViewsSmall.setImageViewResource(R.id.btn_pause, R.drawable.ic_phonograph_play);
 			builder.setOngoing(false);
 			notificationManager.notify(NOTIF_ID, notification);
 		}
@@ -222,8 +218,8 @@ public class PlaybackService extends Service {
 	public void onStartPlayback() {
 //		if (remoteViewsBig != null && remoteViewsSmall != null) {
 		if (remoteViewsSmall != null) {
-//			remoteViewsBig.setImageViewResource(R.id.btn_pause, R.drawable.ic_pause);
-			remoteViewsSmall.setImageViewResource(R.id.btn_pause, R.drawable.ic_pause);
+//			remoteViewsBig.setImageViewResource(R.id.btn_pause, R.drawable.ic_phonograph_pause);
+			remoteViewsSmall.setImageViewResource(R.id.btn_pause, R.drawable.ic_phonograph_pause);
 			builder.setOngoing(true);
 			notificationManager.notify(NOTIF_ID, notification);
 		}

@@ -1,14 +1,13 @@
 package com.dimowner.audiorecorder.app.settings;
 
 import com.dimowner.audiorecorder.AppConstants;
-import com.dimowner.audiorecorder.BackgroundQueue;
-import com.dimowner.audiorecorder.data.FileRepository;
 import com.dimowner.audiorecorder.data.Prefs;
 import com.dimowner.audiorecorder.data.database.LocalRepository;
-import com.dimowner.audiorecorder.data.database.Record;
 import com.dimowner.audiorecorder.util.AndroidUtils;
-import com.dimowner.audiorecorder.util.FileUtil;
 import com.dimowner.audiorecorder.util.TimeUtils;
+import com.dimowner.phonograph.BackgroundQueue;
+import com.dimowner.phonograph.data.FileRepository;
+import com.dimowner.phonograph.util.FileUtil;
 
 import java.util.List;
 
@@ -204,38 +203,6 @@ public class SettingsPresenter implements SettingsContract.UserActionsListener {
 		}
 		prefs.setSampleRate(rate);
 		updateAvailableSpace();
-	}
-
-	@Override
-	public void deleteAllRecords() {
-		recordingsTasks.postRunnable(new Runnable() {
-			@Override
-			public void run() {
-//				List<Record> records  = localRepository.getAllRecords();
-//				for (int i = 0; i < records.size(); i++) {
-//					fileRepository.deleteRecordFile(records.get(i).getPath());
-//				}
-//				boolean b2 = localRepository.deleteAllRecords();
-//				prefs.setActiveRecord(-1);
-//				if (b2) {
-//					AndroidUtils.runOnUIThread(new Runnable() {
-//						@Override
-//						public void run() {
-//							if (view != null) {
-//								view.showAllRecordsDeleted();
-//							}
-//						}});
-//				} else {
-//					AndroidUtils.runOnUIThread(new Runnable() {
-//						@Override
-//						public void run() {
-//							if (view != null) {
-//								view.showFailDeleteAllRecords();
-//							}
-//						}});
-//				}
-			}
-		});
 	}
 
 	@Override

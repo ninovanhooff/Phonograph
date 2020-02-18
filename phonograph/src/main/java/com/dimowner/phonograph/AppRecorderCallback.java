@@ -1,4 +1,4 @@
-package com.dimowner.audiorecorder.app;
+package com.dimowner.phonograph;
 
 import com.dimowner.phonograph.exception.AppException;
 

@@ -16,7 +16,7 @@
 			android:layout_gravity="center_vertical"
 			android:layout_margin="@dimen/spacing_normal"
 			android:scaleType="center"
-			android:src="@mipmap/audio_recorder_logo"/>
+			android:src="@android:drawable/sym_def_app_icon"/>
 
 
 	<LinearLayout
@@ -56,7 +56,7 @@
 			android:padding="@dimen/spacing_normal"
 			android:layout_gravity="center_vertical"
 			android:scaleType="center"
-			android:src="@drawable/ic_pause"/>
+			android:src="@drawable/ic_phonograph_record"/>
 
 	<ImageButton
 			android:id="@+id/btn_close"
@@ -68,6 +68,6 @@
 			android:padding="@dimen/spacing_normal"
 			android:layout_gravity="center_vertical"
 			android:scaleType="center"
-			android:src="@drawable/ic_round_close"/>
+			android:src="@drawable/ic_phonograph_close"/>
 
 </LinearLayout>

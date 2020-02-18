@@ -1,5 +1,11 @@
 <resources>
 
+	<string name="app_name" translatable="false">Phonograph App</string>
+
+	<string name="recording_is_on">Recording is ON</string>
+	<string name="recording_paused">Paused</string> <!-- todo namespace !-->
+
+
 	<string name="error_unknown">Unexpected error</string>
 	<string name="error_cant_create_file">Can\'t create file</string>
 	<string name="error_invalid_output_file">Invalid output file</string>

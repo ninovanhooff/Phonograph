@@ -43,9 +43,6 @@ public class TimeUtils {
 	/** Date format: 11/22/2018, 11:30 */
 	private static SimpleDateFormat dateTimeFormatUS = new SimpleDateFormat("MM/dd/yyyy, HH:mm", Locale.US);
 
-	/** Date format: 2019.09.22 11:30 */
-	private static SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy.MM.dd HH.mm.ss", Locale.getDefault());
-
 	/** Time format: 11:30 */
 	private static SimpleDateFormat timeFormatEU = new SimpleDateFormat("HH:mm", Locale.FRANCE);
 
@@ -166,9 +163,6 @@ public class TimeUtils {
 				cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR));
 	}
 
-	public static String formatDateForName(long time) {
-			return dateTimeFormat.format(new Date(time));
-	}
 
 	public static String formatDateTime(long time) {
 		return dateTimeFormatEU.format(new Date(time));

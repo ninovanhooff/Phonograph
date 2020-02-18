@@ -23,6 +23,23 @@ public class PhonographConstants {
 
 	private PhonographConstants() {}
 
+	public static final int RECORDING_FORMAT_M4A = 0;
+	public static final int RECORDING_FORMAT_WAV = 1;
+
+	public final static long MIN_REMAIN_RECORDING_TIME = 60000; // 1000 X 60 = 1 Minute
+
+	//BEGINNING-------------- File-related constants --------------------------------------------
+	public static final String RECORDS_DIR = "records";
+	public static final String BASE_RECORD_NAME = "Record-";
+	public static final String BASE_RECORD_NAME_SHORT = "Rec-";
+	public static final String M4A_EXTENSION = "m4a";
+	public static final String WAV_EXTENSION = "wav";
+	public static final String EXTENSION_SEPARATOR = ".";
+
+	public static final int NAMING_COUNTED = 0;
+	public static final int NAMING_DATE = 1;
+	//END-------------------- File-related constants --------------------------------------------
+
 	//BEGINNING-------------- Waveform visualisation constants ----------------------------------
 
 	/** Density pixel count per one second of time.

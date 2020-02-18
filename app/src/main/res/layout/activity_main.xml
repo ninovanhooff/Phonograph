@@ -156,7 +156,7 @@
 					android:layout_gravity="bottom|center"
 					android:scaleType="center"
 					android:visibility="invisible"
-					android:src="@drawable/ic_play"/>
+					android:src="@drawable/ic_phonograph_play"/>
 
 			<ImageButton
 					android:id="@+id/btn_stop"
@@ -169,7 +169,7 @@
 					android:layout_marginStart="27dp"
 					android:scaleType="center"
 					android:visibility="gone"
-					android:src="@drawable/ic_stop"/>
+					android:src="@drawable/ic_phonograph_stop"/>
 		</FrameLayout>
 
 	</LinearLayout>
@@ -304,7 +304,7 @@
 					android:contentDescription="@null"
 					android:padding="@dimen/spacing_normal"
 					android:scaleType="center"
-					android:src="@drawable/ic_stop"
+					android:src="@drawable/ic_phonograph_stop"
 					android:visibility="invisible" />
 
 		</LinearLayout>

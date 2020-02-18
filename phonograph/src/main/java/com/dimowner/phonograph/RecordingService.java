@@ -1,4 +1,4 @@
-package com.dimowner.audiorecorder.app;
+package com.dimowner.phonograph;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -18,16 +18,11 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
-import com.dimowner.audiorecorder.ARApplication;
-import com.dimowner.audiorecorder.AppConstants;
-import com.dimowner.audiorecorder.ColorMap;
-import com.dimowner.audiorecorder.R;
-import com.dimowner.audiorecorder.app.main.MainActivity;
-import com.dimowner.audiorecorder.data.FileRepository;
-import com.dimowner.audiorecorder.data.Prefs;
-import com.dimowner.audiorecorder.util.AndroidUtils;
-import com.dimowner.audiorecorder.util.FileUtil;
+import com.dimowner.phonograph.data.FileRepository;
+import com.dimowner.phonograph.data.PhonographPrefs;
 import com.dimowner.phonograph.exception.AppException;
+import com.dimowner.phonograph.util.AndroidUtils;
+import com.dimowner.phonograph.util.FileUtil;
 
 import java.io.File;
 
@@ -55,9 +50,9 @@ public class RecordingService extends Service {
 
 	private AppRecorder appRecorder;
 	private AppRecorderCallback appRecorderCallback;
-	private ColorMap colorMap;
+	private PhonographColorMap colorMap;
 	private boolean started = false;
-	private Prefs prefs;
+	private PhonographPrefs prefs;
 	private FileRepository fileRepository;
 
 	public RecordingService() {
@@ -71,10 +66,10 @@ public class RecordingService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		appRecorder = ARApplication.getInjector().provideAppRecorder();
-		colorMap = ARApplication.getInjector().provideColorMap();
-		prefs = ARApplication.getInjector().providePrefs();
-		fileRepository = ARApplication.getInjector().provideFileRepository();
+		appRecorder = Phonograph.getAppRecorder();
+		colorMap = Phonograph.getInjector().provideColorMap();
+		prefs = Phonograph.getInjector().providePrefs();
+		fileRepository = Phonograph.getInjector().provideFileRepository();
 
 		appRecorderCallback = new AppRecorderCallback() {
 			@Override public void onRecordingStarted() {
@@ -112,7 +107,7 @@ public class RecordingService extends Service {
 		}
 		NotificationCompat.Builder builder =
 				new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
-						.setSmallIcon(R.drawable.ic_record_rec)
+						.setSmallIcon(R.drawable.ic_phonograph_record_rec)
 						.setContentTitle(getApplicationContext().getString(R.string.app_name))
 						.setContentText(getApplicationContext().getString(R.string.error_no_available_space))
 						.setContentIntent(createContentIntent())
@@ -129,13 +124,13 @@ public class RecordingService extends Service {
 	private boolean hasAvailableSpace() {
 		final long space = FileUtil.getFree(fileRepository.getRecordingDir());
 		final long time = spaceToTimeSecs(space, prefs.getFormat(), prefs.getSampleRate(), prefs.getRecordChannelCount());
-		return time > AppConstants.MIN_REMAIN_RECORDING_TIME;
+		return time > PhonographConstants.MIN_REMAIN_RECORDING_TIME;
 	}
 
 	private long spaceToTimeSecs(long spaceBytes, int format, int sampleRate, int channels) {
-		if (format == AppConstants.RECORDING_FORMAT_M4A) {
-			return 1000 * (spaceBytes/(AppConstants.RECORD_ENCODING_BITRATE_48000 /8));
-		} else if (format == AppConstants.RECORDING_FORMAT_WAV) {
+		if (format == PhonographConstants.RECORDING_FORMAT_M4A) {
+			return 1000 * (spaceBytes/(PhonographConstants.RECORD_ENCODING_BITRATE_48000 /8));
+		} else if (format == PhonographConstants.RECORDING_FORMAT_WAV) {
 			return 1000 * (spaceBytes/(sampleRate * channels * 2));
 		} else {
 			return 0;
@@ -199,7 +194,7 @@ public class RecordingService extends Service {
 		builder = new NotificationCompat.Builder(this, CHANNEL_ID);
 
 		builder.setWhen(System.currentTimeMillis());
-		builder.setSmallIcon(R.drawable.ic_record_rec);
+		builder.setSmallIcon(R.drawable.ic_phonograph_record);
 		builder.setPriority(Notification.PRIORITY_MAX);
 		// Make head-up notification.
 		builder.setContentIntent(createContentIntent());
@@ -215,7 +210,7 @@ public class RecordingService extends Service {
 
 	private PendingIntent createContentIntent() {
 		// Create notification default intent.
-		Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+		Intent intent = new Intent(getApplicationContext(), Phonograph.getActivityClass());
 		intent.setFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
 		return PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
 	}
@@ -252,7 +247,7 @@ public class RecordingService extends Service {
 	private void updateNotificationPause() {
 		if (started && remoteViewsSmall != null) {
 			remoteViewsSmall.setTextViewText(R.id.txt_recording_progress, getResources().getString(R.string.recording_paused));
-			remoteViewsSmall.setImageViewResource(R.id.btn_recording_pause, R.drawable.ic_recording_yellow);
+			remoteViewsSmall.setImageViewResource(R.id.btn_recording_pause, R.drawable.ic_phonograph_pause);
 
 			notificationManager.notify(NOTIF_ID, notification);
 		}
@@ -261,7 +256,7 @@ public class RecordingService extends Service {
 	private void updateNotificationResume() {
 		if (started && remoteViewsSmall != null) {
 			remoteViewsSmall.setTextViewText(R.id.txt_recording_progress, getResources().getString(R.string.recording_is_on));
-			remoteViewsSmall.setImageViewResource(R.id.btn_recording_pause, R.drawable.ic_pause);
+			remoteViewsSmall.setImageViewResource(R.id.btn_recording_pause, android.R.drawable.ic_media_pause);
 
 			notificationManager.notify(NOTIF_ID, notification);
 		}

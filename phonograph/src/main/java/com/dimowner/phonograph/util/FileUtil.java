@@ -14,24 +14,17 @@
  * limitations under the License.
  */
 
-package com.dimowner.audiorecorder.util;
+package com.dimowner.phonograph.util;
 
-import android.content.ContentResolver;
 import android.content.Context;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
-import android.provider.DocumentsContract;
 import android.util.Log;
-import android.webkit.MimeTypeMap;
 
-import com.dimowner.audiorecorder.AppConstants;
+import com.dimowner.phonograph.PhonographConstants;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
@@ -58,12 +51,10 @@ public class FileUtil {
 	private FileUtil() {
 	}
 
-	public static File getAppDir() {
-		return getStorageDir(AppConstants.APPLICATION_NAME);
-	}
+
 
 	public static File getPrivateRecordsDir(Context context) throws FileNotFoundException {
-		File dir = FileUtil.getPrivateMusicStorageDir(context, AppConstants.RECORDS_DIR);
+		File dir = FileUtil.getPrivateMusicStorageDir(context, PhonographConstants.RECORDS_DIR);
 		if (dir == null) {
 			throw new FileNotFoundException();
 		}
@@ -72,19 +63,19 @@ public class FileUtil {
 
 //	public static String generateRecordNameDate(String extension) {
 //		long time = System.currentTimeMillis();
-//		return AppConstants.BASE_RECORD_NAME + time/100 + AppConstants.EXTENSION_SEPARATOR + extension;
+//		return PhonographConstants.BASE_RECORD_NAME + time/100 + PhonographConstants.EXTENSION_SEPARATOR + extension;
 //	}
 
 	public static String generateRecordNameCounted(long counter) {
-		return AppConstants.BASE_RECORD_NAME + counter;
+		return PhonographConstants.BASE_RECORD_NAME + counter;
 	}
 
 	public static String generateRecordNameDate() {
-		return AppConstants.BASE_RECORD_NAME_SHORT + TimeUtils.formatDateForName(System.currentTimeMillis());
+		return PhonographConstants.BASE_RECORD_NAME_SHORT + TimeUtils.formatDateForName(System.currentTimeMillis());
 	}
 
 	public static String addExtension(String name, String extension) {
-		return name + AppConstants.EXTENSION_SEPARATOR + extension;
+		return name + PhonographConstants.EXTENSION_SEPARATOR + extension;
 	}
 
 	/**
@@ -93,8 +84,8 @@ public class FileUtil {
 	 * @return File name without extension or unchanged String if extension was not identified.
 	 */
 	public static String removeFileExtension(String name) {
-		if (name.contains(AppConstants.EXTENSION_SEPARATOR)) {
-			return name.substring(0, name.lastIndexOf(AppConstants.EXTENSION_SEPARATOR));
+		if (name.contains(PhonographConstants.EXTENSION_SEPARATOR)) {
+			return name.substring(0, name.lastIndexOf(PhonographConstants.EXTENSION_SEPARATOR));
 		}
 		return name;
 	}
@@ -371,7 +362,7 @@ public class FileUtil {
 			return false;
 		}
 		Timber.v("old File: " + file.getAbsolutePath());
-		File renamed = new File(file.getParentFile().getAbsolutePath() + File.separator + newName + AppConstants.EXTENSION_SEPARATOR + extension);
+		File renamed = new File(file.getParentFile().getAbsolutePath() + File.separator + newName + PhonographConstants.EXTENSION_SEPARATOR + extension);
 		Timber.v("new File: " + renamed.getAbsolutePath());
 
 		if (!file.renameTo(renamed)) {
@@ -420,114 +411,4 @@ public class FileUtil {
 		return ok;
 	}
 
-	private static boolean isVirtualFile(Context context, Uri uri) {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-			if (!DocumentsContract.isDocumentUri(context, uri)) {
-				return false;
-			}
-			Cursor cursor = context.getContentResolver().query(
-					uri,
-					new String[]{DocumentsContract.Document.COLUMN_FLAGS},
-					null, null, null);
-			int flags = 0;
-			if (cursor.moveToFirst()) {
-				flags = cursor.getInt(0);
-			}
-			cursor.close();
-			return (flags & DocumentsContract.Document.FLAG_VIRTUAL_DOCUMENT) != 0;
-		} else {
-			return false;
-		}
-	}
-
-	private static InputStream getInputStreamForVirtualFile(Context context, Uri uri, String mimeTypeFilter)
-			throws IOException {
-
-		ContentResolver resolver = context.getContentResolver();
-		String[] openableMimeTypes = resolver.getStreamTypes(uri, mimeTypeFilter);
-		if (openableMimeTypes == null || openableMimeTypes.length < 1) {
-			throw new FileNotFoundException();
-		}
-		return resolver
-				.openTypedAssetFileDescriptor(uri, openableMimeTypes[0], null)
-				.createInputStream();
-	}
-
-	private static String getMimeType(String url) {
-		String type = null;
-		String extension = MimeTypeMap.getFileExtensionFromUrl(url);
-		if (extension != null) {
-			type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-		}
-		return type;
-	}
-
-	public static boolean saveFile(Context context, String name, Uri sourceuri, String destinationDir, String destFileName) {
-
-		BufferedInputStream bis = null;
-		BufferedOutputStream bos = null;
-		InputStream input = null;
-		boolean hasError = false;
-
-		try {
-			if (isVirtualFile(context, sourceuri)) {
-				input = getInputStreamForVirtualFile(context, sourceuri, getMimeType(name));
-			} else {
-				input = context.getContentResolver().openInputStream(sourceuri);
-			}
-
-			boolean directorySetupResult;
-			File destDir = new File(destinationDir);
-			if (!destDir.exists()) {
-				directorySetupResult = destDir.mkdirs();
-			} else if (!destDir.isDirectory()) {
-				directorySetupResult = replaceFileWithDir(destinationDir);
-			} else {
-				directorySetupResult = true;
-			}
-
-			if (!directorySetupResult) {
-				hasError = true;
-			} else {
-				String destination = destinationDir + File.separator + destFileName;
-				int originalsize = input.available();
-
-				bis = new BufferedInputStream(input);
-				bos = new BufferedOutputStream(new FileOutputStream(destination));
-				byte[] buf = new byte[originalsize];
-				bis.read(buf);
-				do {
-					bos.write(buf);
-				} while (bis.read(buf) != -1);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			hasError = true;
-		} finally {
-			try {
-				if (bos != null) {
-					bos.flush();
-					bos.close();
-				}
-			} catch (Exception ignored) {
-			}
-		}
-
-		return !hasError;
-	}
-
-	private static boolean replaceFileWithDir(String path) {
-		File file = new File(path);
-		if (!file.exists()) {
-			if (file.mkdirs()) {
-				return true;
-			}
-		} else if (file.delete()) {
-			File folder = new File(path);
-			if (folder.mkdirs()) {
-				return true;
-			}
-		}
-		return false;
-	}
 }

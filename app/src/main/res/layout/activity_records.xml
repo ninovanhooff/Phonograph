@@ -303,7 +303,7 @@
 						android:contentDescription="@null"
 						android:layout_gravity="center"
 						android:scaleType="center"
-						android:src="@drawable/ic_stop"/>
+						android:src="@drawable/ic_phonograph_stop"/>
 
 				<View
 						android:layout_width="0dp"

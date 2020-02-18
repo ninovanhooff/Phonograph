@@ -33,8 +33,6 @@ public interface LocalRepository {
 
 	List<Record> getRecords(int page, int order);
 
-	boolean deleteAllRecords();
-
 	Record getLastRecord();
 
 	Record insertRecord(Record record);

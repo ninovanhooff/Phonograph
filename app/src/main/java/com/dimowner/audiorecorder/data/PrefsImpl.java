@@ -20,6 +20,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.dimowner.audiorecorder.AppConstants;
+import com.dimowner.audiorecorder.R;
+import com.dimowner.phonograph.util.FileUtil;
 
 /**
  * App preferences implementation
@@ -47,9 +49,12 @@ public class PrefsImpl implements Prefs {
 	private SharedPreferences sharedPreferences;
 
 	private volatile static PrefsImpl instance;
+	private String publicRecordingDirName;
 
 	private PrefsImpl(Context context) {
 		sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+		String appName = context.getString(R.string.app_name);
+		publicRecordingDirName = FileUtil.removeUnallowedSignsFromName(appName);
 	}
 
 	public static PrefsImpl getInstance(Context context) {
@@ -200,6 +205,12 @@ public class PrefsImpl implements Prefs {
 	@Override
 	public int getSampleRate() {
 		return sharedPreferences.getInt(PREF_KEY_SAMPLE_RATE, AppConstants.RECORD_SAMPLE_RATE_44100);
+	}
+
+	/** Not user-settable for now. Returns app name */
+	@Override
+	public String getPublicRecordingDirName() {
+		return publicRecordingDirName;
 	}
 
 	@Override

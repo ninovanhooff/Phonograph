@@ -1,12 +1,13 @@
 package com.dimowner.audiorecorder;
 
 import com.dimowner.audiorecorder.data.Prefs;
+import com.dimowner.phonograph.PhonographColorMap;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class ColorMap {
+public class ColorMap implements PhonographColorMap {
 
 	private static ColorMap singleton;
 
@@ -117,6 +118,7 @@ public class ColorMap {
 		return appThemeResource;
 	}
 
+	@Override
 	public int getPrimaryColorRes() {
 		return primaryColorRes;
 	}

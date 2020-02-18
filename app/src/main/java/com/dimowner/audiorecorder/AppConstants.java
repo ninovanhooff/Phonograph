@@ -26,12 +26,9 @@ public class AppConstants {
 	public static final String REQUESTS_RECEIVER = "dimmony@gmail.com";
 
 	public static final String APPLICATION_NAME = "AudioRecorder";
-	public static final String RECORDS_DIR = "records";
 	public static final String M4A_EXTENSION = "m4a";
 	public static final String WAV_EXTENSION = "wav";
 	public static final String EXTENSION_SEPARATOR = ".";
-	public static final String BASE_RECORD_NAME = "Record-";
-	public static final String BASE_RECORD_NAME_SHORT = "Rec-";
 	public static final int MAX_RECORD_NAME_LENGTH = 50;
 
 	public static final int NAMING_COUNTED = 0;
@@ -46,6 +43,8 @@ public class AppConstants {
 	public final static long MIN_REMAIN_RECORDING_TIME = 60000; // 1000 X 60 = 1 Minute
 
 	//BEGINNING-------------- Waveform visualisation constants ----------------------------------
+
+
 
 	/** Density pixel count per one second of time.
 	 *  Used for short records (shorter than {@link AppConstants#LONG_RECORD_THRESHOLD_SECONDS}) */

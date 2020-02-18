@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package com.dimowner.audiorecorder.data;
+package com.dimowner.phonograph.data;
 
 import android.content.Context;
 
-import com.dimowner.audiorecorder.ARApplication;
-import com.dimowner.audiorecorder.AppConstants;
-import com.dimowner.audiorecorder.util.FileUtil;
+import com.dimowner.phonograph.PhonographConstants;
 import com.dimowner.phonograph.exception.CantCreateFileException;
+import com.dimowner.phonograph.util.FileUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,16 +30,16 @@ import timber.log.Timber;
 public class FileRepositoryImpl implements FileRepository {
 
 	private File recordDirectory;
-	private Prefs prefs;
+	private PhonographPrefs prefs;
 
 	private volatile static FileRepositoryImpl instance;
 
-	private FileRepositoryImpl(Context context, Prefs prefs) {
+	private FileRepositoryImpl(Context context, PhonographPrefs prefs) {
 		updateRecordingDir(context, prefs);
 		this.prefs = prefs;
 	}
 
-	public static FileRepositoryImpl getInstance(Context context, Prefs prefs) {
+	public static FileRepositoryImpl getInstance(Context context, PhonographPrefs prefs) {
 		if (instance == null) {
 			synchronized (FileRepositoryImpl.class) {
 				if (instance == null) {
@@ -56,15 +55,15 @@ public class FileRepositoryImpl implements FileRepository {
 		prefs.incrementRecordCounter();
 		File recordFile;
 		String recordName;
-		if (prefs.getNamingFormat() == AppConstants.NAMING_COUNTED) {
+		if (prefs.getNamingFormat() == PhonographConstants.NAMING_COUNTED) {
 			recordName = FileUtil.generateRecordNameCounted(prefs.getRecordCounter());
 		} else {
 			recordName = FileUtil.generateRecordNameDate();
 		}
-		if (prefs.getFormat() == AppConstants.RECORDING_FORMAT_WAV) {
-			recordFile = FileUtil.createFile(recordDirectory, FileUtil.addExtension(recordName, AppConstants.WAV_EXTENSION));
+		if (prefs.getFormat() == PhonographConstants.RECORDING_FORMAT_WAV) {
+			recordFile = FileUtil.createFile(recordDirectory, FileUtil.addExtension(recordName, PhonographConstants.WAV_EXTENSION));
 		} else {
-			recordFile = FileUtil.createFile(recordDirectory, FileUtil.addExtension(recordName, AppConstants.M4A_EXTENSION));
+			recordFile = FileUtil.createFile(recordDirectory, FileUtil.addExtension(recordName, PhonographConstants.M4A_EXTENSION));
 		}
 		if (recordFile != null) {
 			return recordFile;
@@ -81,16 +80,6 @@ public class FileRepositoryImpl implements FileRepository {
 		throw new CantCreateFileException();
 	}
 
-//	@Override
-//	public File getRecordFileByName(String name, String extension) {
-//		File recordFile = new File(recordDirectory.getAbsolutePath() + File.separator + FileUtil.generateRecordNameCounted(prefs.getRecordCounter(), extension));
-//		if (recordFile.exists() && recordFile.isFile()) {
-//			return recordFile;
-//		}
-//		Timber.e("File %s was not found", recordFile.getAbsolutePath());
-//		return null;
-//	}
-
 	@Override
 	public File getRecordingDir() {
 		return recordDirectory;
@@ -105,18 +94,13 @@ public class FileRepositoryImpl implements FileRepository {
 	}
 
 	@Override
-	public boolean deleteAllRecords() {
-		return FileUtil.deleteFile(recordDirectory);
-	}
-
-	@Override
 	public boolean renameFile(String path, String newName, String extension) {
 		return FileUtil.renameFile(new File(path), newName, extension);
 	}
 
-	public void updateRecordingDir(Context context, Prefs prefs) {
+	public void updateRecordingDir(Context context, PhonographPrefs prefs) {
 		if (prefs.isStoreDirPublic()) {
-			recordDirectory = FileUtil.getAppDir();
+			recordDirectory = getAppDir();
 			if (recordDirectory == null) {
 				//Try to init private dir
 				try {
@@ -124,7 +108,7 @@ public class FileRepositoryImpl implements FileRepository {
 				} catch (FileNotFoundException e) {
 					Timber.e(e);
 					//If nothing helped then hardcode recording dir
-					recordDirectory = new File("/data/data/" + ARApplication.appPackage() + "/files");
+					recordDirectory = context.getFilesDir();
 				}
 			}
 		} else {
@@ -133,12 +117,16 @@ public class FileRepositoryImpl implements FileRepository {
 			} catch (FileNotFoundException e) {
 				Timber.e(e);
 				//Try to init public dir
-				recordDirectory = FileUtil.getAppDir();
+				recordDirectory = getAppDir();
 				if (recordDirectory == null) {
 					//If nothing helped then hardcode recording dir
-					recordDirectory = new File("/data/data/" + ARApplication.appPackage() + "/files");
+					recordDirectory = context.getFilesDir(); // todo test
 				}
 			}
 		}
+	}
+
+	private File getAppDir() {
+		return FileUtil.getStorageDir(prefs.getPublicRecordingDirName());
 	}
 }

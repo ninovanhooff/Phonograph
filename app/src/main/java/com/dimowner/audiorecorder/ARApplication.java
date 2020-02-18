@@ -19,7 +19,9 @@ package com.dimowner.audiorecorder;
 import android.app.Application;
 import android.os.Handler;
 
+import com.dimowner.audiorecorder.app.main.MainActivity;
 import com.dimowner.audiorecorder.util.AndroidUtils;
+import com.dimowner.phonograph.BuildConfig;
 import com.dimowner.phonograph.Phonograph;
 
 import timber.log.Timber;
@@ -59,8 +61,10 @@ public class ARApplication extends Application {
 
 		PACKAGE_NAME = getApplicationContext().getPackageName();
 		applicationHandler = new Handler(getApplicationContext().getMainLooper());
-		Phonograph.setScreenWidthDp(AndroidUtils.pxToDp(AndroidUtils.getScreenWidth(getApplicationContext())));
 		injector = new Injector(getApplicationContext());
+		Phonograph.initialize(getApplicationContext(), MainActivity.class, injector.provideAppRecorder());
+		Phonograph.setScreenWidthDp(AndroidUtils.pxToDp(AndroidUtils.getScreenWidth(getApplicationContext())));
+
 	}
 
 	@Override

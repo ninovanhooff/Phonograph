@@ -1,4 +1,4 @@
-package com.dimowner.audiorecorder;
+package com.dimowner.phonograph;
 
 import android.os.Handler;
 import android.os.Looper;

@@ -1,10 +1,12 @@
 package com.dimowner.audiorecorder.app;
 
 import com.dimowner.audiorecorder.AppConstants;
-import com.dimowner.audiorecorder.BackgroundQueue;
 import com.dimowner.audiorecorder.data.Prefs;
 import com.dimowner.audiorecorder.data.database.LocalRepository;
 import com.dimowner.audiorecorder.util.AndroidUtils;
+import com.dimowner.phonograph.AppRecorder;
+import com.dimowner.phonograph.AppRecorderCallback;
+import com.dimowner.phonograph.BackgroundQueue;
 import com.dimowner.phonograph.Phonograph;
 import com.dimowner.phonograph.audio.recorder.RecorderContract;
 import com.dimowner.phonograph.exception.AppException;

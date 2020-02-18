@@ -414,20 +414,6 @@ public class LocalRepositoryImpl implements LocalRepository {
 		}
 	}
 
-	@Override
-	public boolean deleteAllRecords() {
-		if (!dataSource.isOpen()) {
-			dataSource.open();
-		}
-		try {
-//			dataSource.deleteAll();
-			return true;
-		} catch (SQLException e) {
-			Timber.e(e);
-			return false;
-		}
-	}
-
 	private void checkForLostRecords(List<Record> list) {
 		List<Record> lost = new ArrayList<>();
 		for (int i = 0; i < list.size(); i++) {

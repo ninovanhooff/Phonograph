@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.dimowner.audiorecorder.data;
+package com.dimowner.phonograph.data;
 
 import android.content.Context;
 
@@ -28,16 +28,12 @@ public interface FileRepository {
 
 	File provideRecordFile(String name) throws CantCreateFileException;
 
-//	File getRecordFileByName(String name, String extension);
-
 	File getRecordingDir();
 
 	boolean deleteRecordFile(String path);
 
-	boolean deleteAllRecords();
-
 	boolean renameFile(String path, String newName, String extension);
 
-	void updateRecordingDir(Context context, Prefs prefs);
+	void updateRecordingDir(Context context, PhonographPrefs prefs);
 
 }

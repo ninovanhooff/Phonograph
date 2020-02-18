@@ -43,8 +43,8 @@ import com.dimowner.audiorecorder.ColorMap;
 import com.dimowner.audiorecorder.R;
 import com.dimowner.audiorecorder.app.trash.TrashActivity;
 import com.dimowner.audiorecorder.util.AndroidUtils;
-import com.dimowner.audiorecorder.util.FileUtil;
 import com.dimowner.phonograph.Phonograph;
+import com.dimowner.phonograph.util.FileUtil;
 
 import java.util.ArrayList;
 import java.util.List;

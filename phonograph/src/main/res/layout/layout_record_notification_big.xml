@@ -16,7 +16,7 @@
 			android:layout_gravity="center_vertical"
 			android:layout_margin="@dimen/spacing_normal"
 			android:scaleType="center"
-			android:src="@mipmap/audio_recorder_logo"/>
+			android:src="@android:drawable/sym_def_app_icon"/>
 
 	<LinearLayout
 			android:layout_width="0dp"
@@ -45,16 +45,16 @@
 	</LinearLayout>
 
 	<ImageButton
-			android:id="@+id/btn_recording_pause"
-			android:layout_width="@dimen/notification_btn"
-			android:layout_height="@dimen/bottom_pnl_btn_size"
-			android:adjustViewBounds="true"
-			android:background="?android:selectableItemBackgroundBorderless"
-			android:contentDescription="@null"
-			android:padding="@dimen/spacing_normal"
-			android:layout_gravity="center_vertical"
-			android:scaleType="center"
-			android:src="@drawable/ic_pause"/>
+		android:id="@+id/btn_recording_pause"
+		android:layout_width="@dimen/notification_btn"
+		android:layout_height="@dimen/bottom_pnl_btn_size"
+		android:layout_gravity="center_vertical"
+		android:adjustViewBounds="true"
+		android:background="?android:selectableItemBackgroundBorderless"
+		android:contentDescription="@null"
+		android:padding="@dimen/spacing_normal"
+		android:scaleType="center"
+		android:src="@drawable/ic_phonograph_pause" />
 
 	<ImageButton
 			android:id="@+id/btn_recording_stop"
@@ -66,5 +66,5 @@
 			android:padding="@dimen/spacing_normal"
 			android:layout_gravity="center_vertical"
 			android:scaleType="center"
-			android:src="@drawable/ic_stop"/>
+			android:src="@drawable/ic_phonograph_stop"/>
 </LinearLayout>

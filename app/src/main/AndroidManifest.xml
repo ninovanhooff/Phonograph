@@ -47,15 +47,15 @@
 		<activity android:name="com.dimowner.audiorecorder.app.trash.TrashActivity"
 				android:screenOrientation="portrait"/>
 
-		<service android:name="com.dimowner.audiorecorder.app.RecordingService" />
-		<service android:name="com.dimowner.audiorecorder.app.PlaybackService" />
+		<service android:name="com.dimowner.phonograph.RecordingService" />
+		<service android:name="com.dimowner.phonograph.PlaybackService" />
 
 <!--	    <meta-data-->
 <!--            android:name="io.fabric.ApiKey"-->
 <!--            android:value="a911efb38fc3ed01944c7ea4410acde51d847864" />-->
 
-		<receiver android:name=".app.RecordingService$StopRecordingReceiver" />
-		<receiver android:name=".app.PlaybackService$StopPlaybackReceiver" />
+		<receiver android:name="com.dimowner.phonograph.RecordingService$StopRecordingReceiver" />
+		<receiver android:name="com.dimowner.phonograph.PlaybackService$StopPlaybackReceiver" />
 
 		<provider
 				android:name=".AppFileProvider"

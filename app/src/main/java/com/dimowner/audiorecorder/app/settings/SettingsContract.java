@@ -57,6 +57,5 @@ public class SettingsContract {
 
 		void setSampleRate(int rate);
 
-		void deleteAllRecords();
 	}
 }

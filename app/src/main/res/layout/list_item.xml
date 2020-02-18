@@ -41,7 +41,7 @@
 			android:layout_gravity="center_vertical"
 			android:contentDescription="@string/btn_play"
 			android:layout_margin="@dimen/spacing_small"
-			android:src="@drawable/ic_play_circle"
+			android:src="@drawable/ic_phonograph_play_circle"
 			android:scaleType="centerCrop"/>
 
 	<LinearLayout

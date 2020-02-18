@@ -54,8 +54,6 @@ import com.dimowner.audiorecorder.ARApplication;
 import com.dimowner.audiorecorder.AppConstants;
 import com.dimowner.audiorecorder.ColorMap;
 import com.dimowner.audiorecorder.R;
-import com.dimowner.audiorecorder.app.PlaybackService;
-import com.dimowner.audiorecorder.app.RecordingService;
 import com.dimowner.audiorecorder.app.info.ActivityInformation;
 import com.dimowner.audiorecorder.app.info.RecordInfo;
 import com.dimowner.audiorecorder.app.records.RecordsActivity;
@@ -64,9 +62,11 @@ import com.dimowner.audiorecorder.app.widget.WaveformView;
 import com.dimowner.audiorecorder.data.database.Record;
 import com.dimowner.audiorecorder.util.AndroidUtils;
 import com.dimowner.audiorecorder.util.AnimationUtil;
-import com.dimowner.audiorecorder.util.FileUtil;
 import com.dimowner.audiorecorder.util.TimeUtils;
 import com.dimowner.phonograph.Phonograph;
+import com.dimowner.phonograph.PlaybackService;
+import com.dimowner.phonograph.RecordingService;
+import com.dimowner.phonograph.util.FileUtil;
 
 import java.io.File;
 import java.util.List;
@@ -398,7 +398,7 @@ public class MainActivity extends Activity implements MainContract.View, View.On
 	@Override
 	public void showRecordingPause() {
 		txtName.setText(R.string.recording_paused);
-		btnRecord.setImageResource(R.drawable.ic_record_rec);
+		btnRecord.setImageResource(R.drawable.ic_phonograph_record_rec);
 //		btnDelete.setVisibility(View.VISIBLE);
 //		btnDelete.setEnabled(true);
 //		btnRecordingStop.setVisibility(View.VISIBLE);
@@ -464,7 +464,7 @@ public class MainActivity extends Activity implements MainContract.View, View.On
 				@Override public void onAnimationStart(Animator animation) { }
 				@Override public void onAnimationEnd(Animator animation) {
 					btnStop.setVisibility(View.VISIBLE);
-					btnPlay.setImageResource(R.drawable.ic_pause);
+					btnPlay.setImageResource(R.drawable.ic_phonograph_pause);
 				}
 				@Override public void onAnimationCancel(Animator animation) { }
 				@Override public void onAnimationRepeat(Animator animation) { }
@@ -472,18 +472,18 @@ public class MainActivity extends Activity implements MainContract.View, View.On
 		} else {
 			btnPlay.setTranslationX(-75f);
 			btnStop.setVisibility(View.VISIBLE);
-			btnPlay.setImageResource(R.drawable.ic_pause);
+			btnPlay.setImageResource(R.drawable.ic_phonograph_pause);
 		}
 	}
 
 	@Override
 	public void showPlayPause() {
-		btnPlay.setImageResource(R.drawable.ic_play);
+		btnPlay.setImageResource(R.drawable.ic_phonograph_play);
 	}
 
 	@Override
 	public void showPlayStop() {
-		btnPlay.setImageResource(R.drawable.ic_play);
+		btnPlay.setImageResource(R.drawable.ic_phonograph_play);
 		waveformView.moveToStart();
 		btnRecord.setEnabled(true);
 		playProgress.setProgress(0);

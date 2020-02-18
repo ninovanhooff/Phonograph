@@ -16,12 +16,13 @@
 
 package com.dimowner.audiorecorder.data;
 
-public interface Prefs {
+import com.dimowner.phonograph.data.PhonographPrefs;
+
+public interface Prefs extends PhonographPrefs {
 
 	boolean isFirstRun();
 	void firstRunExecuted();
 
-	boolean isStoreDirPublic();
 	void setStoreDirPublic(boolean b);
 
 	boolean isAskToRenameAfterStopRecording();
@@ -38,7 +39,6 @@ public interface Prefs {
 	int getThemeColor();
 
 	void setRecordInStereo(boolean stereo);
-	int getRecordChannelCount();
 
 	void setKeepScreenOn(boolean on);
 	boolean isKeepScreenOn();

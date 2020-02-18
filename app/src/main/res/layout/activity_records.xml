@@ -130,7 +130,7 @@
 			android:layout_height="wrap_content"
 			android:layout_gravity="center"/>
 
-	<com.dimowner.audiorecorder.app.widget.TouchLayout
+	<com.dimowner.phonograph.widget.TouchLayout
 			android:id="@+id/touch_layout"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
@@ -182,7 +182,7 @@
 					android:layout_height="100dp"
 					>
 
-				<com.dimowner.audiorecorder.app.widget.WaveformView
+				<com.dimowner.phonograph.widget.WaveformView
 						android:id="@+id/record"
 						android:layout_width="wrap_content"
 						android:layout_height="100dp"
@@ -323,6 +323,6 @@
 
 			</LinearLayout>
 		</LinearLayout>
-	</com.dimowner.audiorecorder.app.widget.TouchLayout>
+	</com.dimowner.phonograph.widget.TouchLayout>
 
 </FrameLayout>

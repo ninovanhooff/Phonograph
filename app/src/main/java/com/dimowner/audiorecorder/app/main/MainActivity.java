@@ -58,7 +58,6 @@ import com.dimowner.audiorecorder.app.info.ActivityInformation;
 import com.dimowner.audiorecorder.app.info.RecordInfo;
 import com.dimowner.audiorecorder.app.records.RecordsActivity;
 import com.dimowner.audiorecorder.app.settings.SettingsActivity;
-import com.dimowner.audiorecorder.app.widget.WaveformView;
 import com.dimowner.audiorecorder.data.database.Record;
 import com.dimowner.audiorecorder.util.AndroidUtils;
 import com.dimowner.audiorecorder.util.AnimationUtil;
@@ -67,6 +66,7 @@ import com.dimowner.phonograph.Phonograph;
 import com.dimowner.phonograph.PlaybackService;
 import com.dimowner.phonograph.RecordingService;
 import com.dimowner.phonograph.util.FileUtil;
+import com.dimowner.phonograph.widget.WaveformView;
 
 import java.io.File;
 import java.util.List;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.dimowner.audiorecorder.app.widget;
+package com.dimowner.phonograph.widget;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -22,8 +22,8 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.dimowner.audiorecorder.R;
-import com.dimowner.audiorecorder.util.AndroidUtils;
+import com.dimowner.phonograph.R;
+import com.dimowner.phonograph.util.AndroidUtils;
 
 public class SimpleWaveformView extends View {
 

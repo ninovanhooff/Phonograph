@@ -131,7 +131,7 @@
 				android:layout_gravity="center"
 				>
 
-			<com.dimowner.audiorecorder.app.widget.WaveformView
+			<com.dimowner.phonograph.widget.WaveformView
 					android:id="@+id/record"
 					android:layout_width="wrap_content"
 					android:layout_height="@dimen/waveform_height"

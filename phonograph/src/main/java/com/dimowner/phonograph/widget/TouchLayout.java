@@ -17,7 +17,7 @@
  * the License.
  */
 
-package com.dimowner.audiorecorder.app.widget;
+package com.dimowner.phonograph.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -25,7 +25,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.dimowner.audiorecorder.util.AndroidUtils;
+import com.dimowner.phonograph.util.AndroidUtils;
 
 import timber.log.Timber;
 

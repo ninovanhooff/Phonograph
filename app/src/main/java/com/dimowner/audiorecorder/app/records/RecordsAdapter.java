@@ -26,7 +26,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
@@ -34,9 +33,9 @@ import android.widget.TextView;
 
 import com.dimowner.audiorecorder.AppConstants;
 import com.dimowner.audiorecorder.R;
-import com.dimowner.audiorecorder.app.widget.SimpleWaveformView;
 import com.dimowner.audiorecorder.util.AndroidUtils;
 import com.dimowner.audiorecorder.util.TimeUtils;
+import com.dimowner.phonograph.widget.SimpleWaveformView;
 
 import java.util.ArrayList;
 import java.util.Calendar;

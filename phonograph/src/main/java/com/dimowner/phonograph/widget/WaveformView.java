@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.dimowner.audiorecorder.app.widget;
+package com.dimowner.phonograph.widget;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -29,17 +29,17 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
-import com.dimowner.audiorecorder.AppConstants;
-import com.dimowner.audiorecorder.R;
-import com.dimowner.audiorecorder.util.AndroidUtils;
-import com.dimowner.audiorecorder.util.TimeUtils;
+import com.dimowner.phonograph.PhonographConstants;
+import com.dimowner.phonograph.R;
+import com.dimowner.phonograph.util.AndroidUtils;
+import com.dimowner.phonograph.util.TimeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class WaveformView extends View {
 
-	private static final int DEFAULT_PIXEL_PER_SECOND = (int) AndroidUtils.dpToPx(AppConstants.SHORT_RECORD_DP_PER_SECOND);
+	private static final int DEFAULT_PIXEL_PER_SECOND = (int) AndroidUtils.dpToPx(PhonographConstants.SHORT_RECORD_DP_PER_SECOND);
 	private static final float SMALL_LINE_HEIGHT = AndroidUtils.dpToPx(12);
 	private static final float PADD = AndroidUtils.dpToPx(6);
 	private static final int VIEW_DRAW_EDGE = 0;
@@ -274,7 +274,7 @@ public class WaveformView extends View {
 
 	public void showRecording() {
 		updateShifts((int) -AndroidUtils.dpToPx(totalRecordingSize));
-		pxPerSecond = (int) AndroidUtils.dpToPx(AppConstants.SHORT_RECORD_DP_PER_SECOND);
+		pxPerSecond = (int) AndroidUtils.dpToPx(PhonographConstants.SHORT_RECORD_DP_PER_SECOND);
 		isShortWaveForm = true;
 		showRecording = true;
 		invalidate();
@@ -410,7 +410,7 @@ public class WaveformView extends View {
 	}
 
 	/**
-	 * Draws grid for short waveform shorter than {@link AppConstants#LONG_RECORD_THRESHOLD_SECONDS} value.
+	 * Draws grid for short waveform shorter than {@link PhonographConstants#LONG_RECORD_THRESHOLD_SECONDS} value.
 	 * Also for recording.
 	 */
 	private void drawGrid(Canvas canvas) {
@@ -444,11 +444,11 @@ public class WaveformView extends View {
 	}
 
 	/**
-	 * Draws grid for long waveform longer than {@link AppConstants#LONG_RECORD_THRESHOLD_SECONDS} value.
+	 * Draws grid for long waveform longer than {@link PhonographConstants#LONG_RECORD_THRESHOLD_SECONDS} value.
 	 */
 	private void drawGrid2(Canvas canvas) {
 		float height = (float) getHeight();
-		int markCount = AppConstants.GRID_LINES_COUNT;
+		int markCount = PhonographConstants.GRID_LINES_COUNT;
 
 		int count = 3 + markCount;
 		int pxPerMark = viewWidth/markCount;

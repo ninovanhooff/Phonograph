@@ -25,9 +25,9 @@ import com.dimowner.audiorecorder.R;
 import com.dimowner.audiorecorder.app.main.MainActivity;
 import com.dimowner.audiorecorder.data.FileRepository;
 import com.dimowner.audiorecorder.data.Prefs;
-import com.dimowner.audiorecorder.exception.AppException;
 import com.dimowner.audiorecorder.util.AndroidUtils;
 import com.dimowner.audiorecorder.util.FileUtil;
+import com.dimowner.phonograph.exception.AppException;
 
 import java.io.File;
 

@@ -1,2 +1,2 @@
-include ':audiorecorder'
+include ':phonograph'
 include ':app'

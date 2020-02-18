@@ -44,6 +44,7 @@ import com.dimowner.audiorecorder.R;
 import com.dimowner.audiorecorder.app.trash.TrashActivity;
 import com.dimowner.audiorecorder.util.AndroidUtils;
 import com.dimowner.audiorecorder.util.FileUtil;
+import com.dimowner.phonograph.Phonograph;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -235,7 +236,7 @@ public class SettingsActivity extends Activity implements SettingsContract.View,
 			}
 			@Override public void onNothingSelected(AdapterView<?> parent) { }
 		});
-		if (ARApplication.isRecording()) {
+		if (Phonograph.isRecording()) {
 			formatSelector.setEnabled(false);
 			formatSelector.setClickable(false);
 		}

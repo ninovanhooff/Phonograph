@@ -22,13 +22,14 @@ import com.dimowner.audiorecorder.app.AppRecorder;
 import com.dimowner.audiorecorder.app.AppRecorderImpl;
 import com.dimowner.audiorecorder.app.lostrecords.LostRecordsContract;
 import com.dimowner.audiorecorder.app.lostrecords.LostRecordsPresenter;
+import com.dimowner.audiorecorder.app.main.MainContract;
+import com.dimowner.audiorecorder.app.main.MainPresenter;
+import com.dimowner.audiorecorder.app.records.RecordsContract;
+import com.dimowner.audiorecorder.app.records.RecordsPresenter;
+import com.dimowner.audiorecorder.app.settings.SettingsContract;
+import com.dimowner.audiorecorder.app.settings.SettingsPresenter;
 import com.dimowner.audiorecorder.app.trash.TrashContract;
 import com.dimowner.audiorecorder.app.trash.TrashPresenter;
-import com.dimowner.audiorecorder.audio.player.AudioPlayer;
-import com.dimowner.audiorecorder.audio.player.PlayerContract;
-import com.dimowner.audiorecorder.audio.recorder.AudioRecorder;
-import com.dimowner.audiorecorder.audio.recorder.RecorderContract;
-import com.dimowner.audiorecorder.audio.recorder.WavRecorder;
 import com.dimowner.audiorecorder.data.FileRepository;
 import com.dimowner.audiorecorder.data.FileRepositoryImpl;
 import com.dimowner.audiorecorder.data.Prefs;
@@ -36,13 +37,12 @@ import com.dimowner.audiorecorder.data.PrefsImpl;
 import com.dimowner.audiorecorder.data.database.LocalRepository;
 import com.dimowner.audiorecorder.data.database.LocalRepositoryImpl;
 import com.dimowner.audiorecorder.data.database.RecordsDataSource;
-import com.dimowner.audiorecorder.app.main.MainContract;
-import com.dimowner.audiorecorder.app.main.MainPresenter;
-import com.dimowner.audiorecorder.app.records.RecordsContract;
-import com.dimowner.audiorecorder.app.records.RecordsPresenter;
-import com.dimowner.audiorecorder.app.settings.SettingsContract;
-import com.dimowner.audiorecorder.app.settings.SettingsPresenter;
 import com.dimowner.audiorecorder.data.database.TrashDataSource;
+import com.dimowner.phonograph.audio.player.AudioPlayer;
+import com.dimowner.phonograph.audio.player.PlayerContract;
+import com.dimowner.phonograph.audio.recorder.AudioRecorder;
+import com.dimowner.phonograph.audio.recorder.RecorderContract;
+import com.dimowner.phonograph.audio.recorder.WavRecorder;
 
 public class Injector {
 

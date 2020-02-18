@@ -19,23 +19,20 @@ package com.dimowner.audiorecorder;
 import android.app.Application;
 import android.os.Handler;
 
-//import com.crashlytics.android.Crashlytics;
 import com.dimowner.audiorecorder.util.AndroidUtils;
-//import io.fabric.sdk.android.Fabric;
+import com.dimowner.phonograph.Phonograph;
 
 import timber.log.Timber;
+
+//import com.crashlytics.android.Crashlytics;
+//import io.fabric.sdk.android.Fabric;
 
 public class ARApplication extends Application {
 
 	private static String PACKAGE_NAME ;
 	public static volatile Handler applicationHandler;
 
-	/** Screen width in dp */
-	private static float screenWidthDp = 0;
-
 	public static Injector injector;
-
-	private static boolean isRecording = false;
 
 	public static Injector getInjector() {
 		return injector;
@@ -43,23 +40,6 @@ public class ARApplication extends Application {
 
 	public static String appPackage() {
 		return PACKAGE_NAME;
-	}
-
-	/**
-	 * Calculate density pixels per second for record duration.
-	 * Used for visualisation waveform in view.
-	 * @param durationSec record duration in seconds
-	 */
-	public static float getDpPerSecond(float durationSec) {
-		if (durationSec > AppConstants.LONG_RECORD_THRESHOLD_SECONDS) {
-			return AppConstants.WAVEFORM_WIDTH * screenWidthDp / durationSec;
-		} else {
-			return AppConstants.SHORT_RECORD_DP_PER_SECOND;
-		}
-	}
-
-	public static int getLongWaveformSampleCount() {
-		return (int)(AppConstants.WAVEFORM_WIDTH * screenWidthDp);
 	}
 
 	@Override
@@ -79,7 +59,7 @@ public class ARApplication extends Application {
 
 		PACKAGE_NAME = getApplicationContext().getPackageName();
 		applicationHandler = new Handler(getApplicationContext().getMainLooper());
-		screenWidthDp = AndroidUtils.pxToDp(AndroidUtils.getScreenWidth(getApplicationContext()));
+		Phonograph.setScreenWidthDp(AndroidUtils.pxToDp(AndroidUtils.getScreenWidth(getApplicationContext())));
 		injector = new Injector(getApplicationContext());
 	}
 
@@ -91,11 +71,4 @@ public class ARApplication extends Application {
 		injector.closeTasks();
 	}
 
-	public static boolean isRecording() {
-		return isRecording;
-	}
-
-	public static void setRecording(boolean recording) {
-		ARApplication.isRecording = recording;
-	}
 }

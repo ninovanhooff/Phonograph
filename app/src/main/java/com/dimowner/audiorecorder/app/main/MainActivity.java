@@ -66,6 +66,7 @@ import com.dimowner.audiorecorder.util.AndroidUtils;
 import com.dimowner.audiorecorder.util.AnimationUtil;
 import com.dimowner.audiorecorder.util.FileUtil;
 import com.dimowner.audiorecorder.util.TimeUtils;
+import com.dimowner.phonograph.Phonograph;
 
 import java.io.File;
 import java.util.List;
@@ -509,7 +510,7 @@ public class MainActivity extends Activity implements MainContract.View, View.On
 			txtZeroTime.setVisibility(View.INVISIBLE);
 		}
 		waveformView.setWaveform(waveForm);
-		waveformView.setPxPerSecond(AndroidUtils.dpToPx(ARApplication.getDpPerSecond((float)duration/1000000f)));
+		waveformView.setPxPerSecond(AndroidUtils.dpToPx(Phonograph.getWaveformDpPerSecond((float)duration/1000000f)));
 	}
 
 	@Override

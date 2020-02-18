@@ -1,6 +1,6 @@
 package com.dimowner.audiorecorder.app;
 
-import com.dimowner.audiorecorder.exception.AppException;
+import com.dimowner.phonograph.exception.AppException;
 
 import java.io.File;
 

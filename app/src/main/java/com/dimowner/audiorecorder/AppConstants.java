@@ -51,10 +51,6 @@ public class AppConstants {
 	 *  Used for short records (shorter than {@link AppConstants#LONG_RECORD_THRESHOLD_SECONDS}) */
 	public static final int SHORT_RECORD_DP_PER_SECOND = 25;
 
-	/** Waveform length, measured in screens count of device.
-	 *  Used for long records (longer than {@link AppConstants#LONG_RECORD_THRESHOLD_SECONDS})   */
-	public static final float WAVEFORM_WIDTH = 1.5f; //one and half of screen waveform width.
-
 	/** Threshold in second which defines when record is considered as long or short.
 	 *  For short and long records used a bit different visualisation algorithm. */
 	public static final int LONG_RECORD_THRESHOLD_SECONDS = 20;
@@ -86,14 +82,7 @@ public class AppConstants {
 	public static final int SORT_NAME = 2;
 	public static final int SORT_DURATION = 3;
 
-//	public final static int RECORD_AUDIO_CHANNELS_COUNT = 2;
 	public final static int RECORD_AUDIO_MONO = 1;
 	public final static int RECORD_AUDIO_STEREO = 2;
-	public final static int RECORD_MAX_DURATION = 14400000; // 240 min 4 hours
-
-	/** Time interval for Recording progress visualisation. */
-	public final static int VISUALIZATION_INTERVAL = 1000/SHORT_RECORD_DP_PER_SECOND; //1000 mills/25 dp per sec
-
-	public final static int RECORD_BYTES_PER_SECOND = RECORD_ENCODING_BITRATE_48000 /8; //bits per sec converted to bytes per sec.
 
 }

@@ -20,7 +20,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 
 import com.dimowner.audiorecorder.AppConstants;
-import com.dimowner.audiorecorder.audio.SoundFile;
+import com.dimowner.phonograph.audio.SoundFile;
 
 import java.io.File;
 import java.io.IOException;

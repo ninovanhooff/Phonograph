@@ -115,6 +115,8 @@ android.variantFilter { variant ->
 }
 
 dependencies {
+	implementation project(':phonograph')
+
 	//Timber
 	implementation "com.jakewharton.timber:timber:$versions.timber"
 	implementation "com.android.support:recyclerview-v7:$versions.support"

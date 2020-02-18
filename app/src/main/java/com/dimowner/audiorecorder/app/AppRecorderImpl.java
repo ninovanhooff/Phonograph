@@ -1,14 +1,14 @@
 package com.dimowner.audiorecorder.app;
 
-import com.dimowner.audiorecorder.ARApplication;
 import com.dimowner.audiorecorder.AppConstants;
 import com.dimowner.audiorecorder.BackgroundQueue;
-import com.dimowner.audiorecorder.audio.recorder.RecorderContract;
 import com.dimowner.audiorecorder.data.Prefs;
 import com.dimowner.audiorecorder.data.database.LocalRepository;
-import com.dimowner.audiorecorder.exception.AppException;
-import com.dimowner.audiorecorder.exception.CantProcessRecord;
 import com.dimowner.audiorecorder.util.AndroidUtils;
+import com.dimowner.phonograph.Phonograph;
+import com.dimowner.phonograph.audio.recorder.RecorderContract;
+import com.dimowner.phonograph.exception.AppException;
+import com.dimowner.phonograph.exception.CantProcessRecord;
 
 import java.io.File;
 import java.io.IOException;
@@ -87,7 +87,7 @@ public class AppRecorderImpl implements AppRecorder {
 					@Override
 					public void run() {
 						try {
-							if ((float)recordingData.size()/(float)ARApplication.getLongWaveformSampleCount() > 1) {
+							if ((float)recordingData.size()/(float)Phonograph.getLongWaveformSampleCount() > 1) {
 								long duration = AndroidUtils.readRecordDuration(output);
 								int[] waveForm = convertRecordingData(recordingData, (int) (duration / 1000000f));
 								id = localRepository.insertFile(output.getAbsolutePath(), duration, waveForm);
@@ -102,7 +102,7 @@ public class AppRecorderImpl implements AppRecorder {
 							@Override
 							public void run() {
 								onRecordingStopped(id, output);
-								if ((float)recordingData.size()/(float)ARApplication.getLongWaveformSampleCount() > 1) {
+								if ((float)recordingData.size()/(float)Phonograph.getLongWaveformSampleCount() > 1) {
 									processingTasks.postRunnable(new Runnable() {
 										@Override
 										public void run() {
@@ -144,7 +144,7 @@ public class AppRecorderImpl implements AppRecorder {
 
 	private int[] convertRecordingData(List<Integer> list, int durationSec) {
 		if (durationSec > AppConstants.LONG_RECORD_THRESHOLD_SECONDS) {
-			int sampleCount = ARApplication.getLongWaveformSampleCount();
+			int sampleCount = Phonograph.getLongWaveformSampleCount();
 			int[] waveForm = new int[sampleCount];
 			int scale = (int)((float)list.size()/(float) sampleCount);
 			for (int i = 0; i < sampleCount; i++) {

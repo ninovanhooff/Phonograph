@@ -18,7 +18,7 @@ package com.dimowner.audiorecorder.data;
 
 import android.content.Context;
 
-import com.dimowner.audiorecorder.exception.CantCreateFileException;
+import com.dimowner.phonograph.exception.CantCreateFileException;
 
 import java.io.File;
 

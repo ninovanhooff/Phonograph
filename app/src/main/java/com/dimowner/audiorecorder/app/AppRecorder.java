@@ -1,6 +1,6 @@
 package com.dimowner.audiorecorder.app;
 
-import com.dimowner.audiorecorder.audio.recorder.RecorderContract;
+import com.dimowner.phonograph.audio.recorder.RecorderContract;
 
 import java.util.List;
 

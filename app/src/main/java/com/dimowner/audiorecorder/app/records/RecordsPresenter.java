@@ -17,7 +17,7 @@
 package com.dimowner.audiorecorder.app.records;
 
 import android.os.Environment;
-import com.dimowner.audiorecorder.ARApplication;
+
 import com.dimowner.audiorecorder.AppConstants;
 import com.dimowner.audiorecorder.BackgroundQueue;
 import com.dimowner.audiorecorder.Mapper;
@@ -25,21 +25,23 @@ import com.dimowner.audiorecorder.R;
 import com.dimowner.audiorecorder.app.AppRecorder;
 import com.dimowner.audiorecorder.app.AppRecorderCallback;
 import com.dimowner.audiorecorder.app.info.RecordInfo;
-import com.dimowner.audiorecorder.audio.player.PlayerContract;
 import com.dimowner.audiorecorder.data.FileRepository;
 import com.dimowner.audiorecorder.data.Prefs;
 import com.dimowner.audiorecorder.data.database.LocalRepository;
 import com.dimowner.audiorecorder.data.database.OnRecordsLostListener;
 import com.dimowner.audiorecorder.data.database.Record;
-import com.dimowner.audiorecorder.exception.AppException;
-import com.dimowner.audiorecorder.exception.ErrorParser;
 import com.dimowner.audiorecorder.util.AndroidUtils;
 import com.dimowner.audiorecorder.util.FileUtil;
 import com.dimowner.audiorecorder.util.TimeUtils;
+import com.dimowner.phonograph.Phonograph;
+import com.dimowner.phonograph.audio.player.PlayerContract;
+import com.dimowner.phonograph.exception.AppException;
+import com.dimowner.phonograph.exception.ErrorParser;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+
 import timber.log.Timber;
 
 public class RecordsPresenter implements RecordsContract.UserActionsListener {
@@ -418,7 +420,7 @@ public class RecordsPresenter implements RecordsContract.UserActionsListener {
 					final Record rec = localRepository.getRecord((int) prefs.getActiveRecord());
 					activeRecord = rec;
 					if (rec != null) {
-						dpPerSecond = ARApplication.getDpPerSecond((float) rec.getDuration() / 1000000f);
+						dpPerSecond = Phonograph.getWaveformDpPerSecond((float) rec.getDuration() / 1000000f);
 					}
 					AndroidUtils.runOnUIThread(new Runnable() {
 						@Override
@@ -485,7 +487,7 @@ public class RecordsPresenter implements RecordsContract.UserActionsListener {
 					final Record rec = localRepository.getRecord((int) prefs.getActiveRecord());
 					activeRecord = rec;
 					if (rec != null) {
-						dpPerSecond = ARApplication.getDpPerSecond((float) rec.getDuration() / 1000000f);
+						dpPerSecond = Phonograph.getWaveformDpPerSecond((float) rec.getDuration() / 1000000f);
 					}
 					AndroidUtils.runOnUIThread(new Runnable() {
 						@Override
@@ -527,7 +529,7 @@ public class RecordsPresenter implements RecordsContract.UserActionsListener {
 						final Record rec = localRepository.getRecord((int) prefs.getActiveRecord());
 						activeRecord = rec;
 						if (rec != null) {
-							dpPerSecond = ARApplication.getDpPerSecond((float) rec.getDuration() / 1000000f);
+							dpPerSecond = Phonograph.getWaveformDpPerSecond((float) rec.getDuration() / 1000000f);
 						}
 						AndroidUtils.runOnUIThread(new Runnable() {
 							@Override
@@ -650,7 +652,7 @@ public class RecordsPresenter implements RecordsContract.UserActionsListener {
 					final Record rec = localRepository.getRecord((int) id);
 					activeRecord = rec;
 					if (rec != null) {
-						dpPerSecond = ARApplication.getDpPerSecond((float) rec.getDuration()/1000000f);
+						dpPerSecond = Phonograph.getWaveformDpPerSecond((float) rec.getDuration()/1000000f);
 						AndroidUtils.runOnUIThread(new Runnable() {
 							@Override
 							public void run() {

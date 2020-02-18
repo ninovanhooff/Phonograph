@@ -20,8 +20,8 @@ import com.dimowner.audiorecorder.ARApplication;
 import com.dimowner.audiorecorder.ColorMap;
 import com.dimowner.audiorecorder.R;
 import com.dimowner.audiorecorder.app.main.MainActivity;
-import com.dimowner.audiorecorder.audio.player.PlayerContract;
-import com.dimowner.audiorecorder.exception.AppException;
+import com.dimowner.phonograph.audio.player.PlayerContract;
+import com.dimowner.phonograph.exception.AppException;
 
 import timber.log.Timber;
 

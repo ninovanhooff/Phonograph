@@ -12,13 +12,13 @@ import android.graphics.Color;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
 import com.dimowner.phonograph.audio.player.PlayerContract;
 import com.dimowner.phonograph.exception.AppException;
 
+import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
 import timber.log.Timber;
 
 public class PlaybackService extends Service {

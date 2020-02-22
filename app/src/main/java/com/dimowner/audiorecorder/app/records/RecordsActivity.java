@@ -29,9 +29,6 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.TypedValue;
@@ -71,6 +68,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import timber.log.Timber;
 
 public class RecordsActivity extends Activity implements RecordsContract.View, View.OnClickListener {
@@ -859,13 +859,17 @@ public class RecordsActivity extends Activity implements RecordsContract.View, V
 	/** Show soft keyboard for a dialog. */
 	public void showKeyboard(){
 		InputMethodManager inputMethodManager = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-		inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+		if (inputMethodManager != null) {
+			inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+		}
 	}
 
 	/** Hide soft keyboard after a dialog. */
 	public void hideKeyboard(){
 		InputMethodManager inputMethodManager = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-		inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+		if (inputMethodManager != null) {
+			inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+		}
 	}
 
 	private boolean checkStoragePermissionPlayback() {

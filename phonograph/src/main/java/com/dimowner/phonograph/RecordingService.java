@@ -12,9 +12,6 @@ import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.os.Build;
 import android.os.IBinder;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -25,6 +22,10 @@ import com.dimowner.phonograph.util.AndroidUtils;
 import com.dimowner.phonograph.util.FileUtil;
 
 import java.io.File;
+
+import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 public class RecordingService extends Service {
 

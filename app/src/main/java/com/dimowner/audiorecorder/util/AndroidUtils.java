@@ -33,7 +33,6 @@ import android.media.MediaExtractor;
 import android.media.MediaFormat;
 import android.net.Uri;
 import android.os.Build;
-import android.support.v4.content.FileProvider;
 import android.text.SpannableStringBuilder;
 import android.text.style.ImageSpan;
 import android.view.Display;
@@ -63,6 +62,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.core.content.FileProvider;
 import timber.log.Timber;
 
 /**

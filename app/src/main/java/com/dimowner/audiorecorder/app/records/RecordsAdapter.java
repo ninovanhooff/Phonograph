@@ -17,8 +17,6 @@
 package com.dimowner.audiorecorder.app.records;
 
 import android.graphics.Typeface;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -40,6 +38,9 @@ import com.dimowner.phonograph.widget.SimpleWaveformView;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class RecordsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 

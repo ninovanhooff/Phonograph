@@ -30,7 +30,6 @@ import android.content.res.ColorStateList;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.TypedValue;
@@ -70,6 +69,8 @@ import com.dimowner.phonograph.widget.WaveformView;
 
 import java.io.File;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 public class MainActivity extends Activity implements MainContract.View, View.OnClickListener {
 

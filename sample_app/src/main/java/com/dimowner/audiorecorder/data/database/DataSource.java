@@ -16,9 +16,6 @@
 
 package com.dimowner.audiorecorder.data.database;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -28,6 +25,9 @@ import android.util.Log;
 
 import com.dimowner.audiorecorder.AppConstants;
 import com.dimowner.audiorecorder.BuildConfig;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Base class to communicate with some table T in database.

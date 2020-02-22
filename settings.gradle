@@ -1,2 +1,2 @@
 include ':phonograph'
-include ':app'
+include ':sample_app'

@@ -2,10 +2,10 @@ package com.dimowner.audiorecorder.app.settings;
 
 import android.app.Activity;
 import android.content.res.Resources;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.view.LayoutInflater;
 import android.widget.TextView;
 
 import com.dimowner.audiorecorder.R;

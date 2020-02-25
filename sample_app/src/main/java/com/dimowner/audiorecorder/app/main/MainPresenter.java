@@ -35,6 +35,7 @@ import com.dimowner.phonograph.AppRecorder;
 import com.dimowner.phonograph.AppRecorderCallback;
 import com.dimowner.phonograph.BackgroundQueue;
 import com.dimowner.phonograph.Phonograph;
+import com.dimowner.phonograph.PhonographConstants;
 import com.dimowner.phonograph.audio.player.PlayerContract;
 import com.dimowner.phonograph.audio.recorder.RecorderContract;
 import com.dimowner.phonograph.data.FileRepository;
@@ -289,7 +290,7 @@ public class MainPresenter implements MainContract.UserActionsListener {
 
 	private long spaceToTimeSecs(long spaceBytes, int format, int sampleRate, int channels) {
 		if (format == AppConstants.RECORDING_FORMAT_M4A) {
-			return 1000 * (spaceBytes/(AppConstants.RECORD_ENCODING_BITRATE_48000 /8));
+			return 1000 * (spaceBytes/(PhonographConstants.RECORD_ENCODING_BITRATE_48000 /8));
 		} else if (format == AppConstants.RECORDING_FORMAT_WAV) {
 			return 1000 * (spaceBytes/(sampleRate * channels * 2));
 		} else {
@@ -300,7 +301,7 @@ public class MainPresenter implements MainContract.UserActionsListener {
 	private boolean hasAvailableSpace() {
 		final long space = FileUtil.getFree(fileRepository.getRecordingDir());
 		final long time = spaceToTimeSecs(space, prefs.getFormat(), prefs.getSampleRate(), prefs.getRecordChannelCount());
-		return time > AppConstants.MIN_REMAIN_RECORDING_TIME;
+		return time > PhonographConstants.MIN_REMAIN_RECORDING_TIME;
 	}
 
 	@Override

@@ -25,7 +25,6 @@ public class AppConstants {
 
 	public static final String REQUESTS_RECEIVER = "dimmony@gmail.com";
 
-	public static final String APPLICATION_NAME = "AudioRecorder";
 	public static final String M4A_EXTENSION = "m4a";
 	public static final String WAV_EXTENSION = "wav";
 	public static final String EXTENSION_SEPARATOR = ".";
@@ -40,7 +39,6 @@ public class AppConstants {
 	public static final int DEFAULT_PER_PAGE = 50;
 
 	public final static long RECORD_IN_TRASH_MAX_DURATION = 5184000000L; // 1000 X 60 X 60 X 24 X 60 = 60 Days
-	public final static long MIN_REMAIN_RECORDING_TIME = 60000; // 1000 X 60 = 1 Minute
 
 	//BEGINNING-------------- Waveform visualisation constants ----------------------------------
 
@@ -54,28 +52,7 @@ public class AppConstants {
 	 *  For short and long records used a bit different visualisation algorithm. */
 	public static final int LONG_RECORD_THRESHOLD_SECONDS = 20;
 
-	/** Count of grid lines on visible part of Waveform (actually lines count visible on screen).
-	 *  Used for long records visualisation algorithm. (longer than {@link AppConstants#LONG_RECORD_THRESHOLD_SECONDS} ) */
-	public static final int GRID_LINES_COUNT = 16;
-
 	//END-------------- Waveform visualisation constants ----------------------------------------
-
-	public static final int TIME_FORMAT_24H = 11;
-	public static final int TIME_FORMAT_12H = 12;
-
-	// recording and playback
-	public final static int PLAYBACK_SAMPLE_RATE = 44100;
-	public final static int RECORD_SAMPLE_RATE_44100 = 44100;
-	public final static int RECORD_SAMPLE_RATE_8000 = 8000;
-	public final static int RECORD_SAMPLE_RATE_16000 = 16000;
-	public final static int RECORD_SAMPLE_RATE_32000 = 32000;
-	public final static int RECORD_SAMPLE_RATE_48000 = 48000;
-
-	public final static int RECORD_ENCODING_BITRATE_24000 = 24000;
-	public final static int RECORD_ENCODING_BITRATE_48000 = 48000;
-	public final static int RECORD_ENCODING_BITRATE_96000 = 96000;
-	public final static int RECORD_ENCODING_BITRATE_128000 = 128000;
-	public final static int RECORD_ENCODING_BITRATE_192000 = 192000;
 
 	public static final int SORT_DATE = 1;
 	public static final int SORT_NAME = 2;

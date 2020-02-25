@@ -1,11 +1,11 @@
 package com.dimowner.audiorecorder.app.settings;
 
-import com.dimowner.audiorecorder.AppConstants;
 import com.dimowner.audiorecorder.data.Prefs;
 import com.dimowner.audiorecorder.data.database.LocalRepository;
 import com.dimowner.audiorecorder.util.AndroidUtils;
 import com.dimowner.audiorecorder.util.TimeUtils;
 import com.dimowner.phonograph.BackgroundQueue;
+import com.dimowner.phonograph.PhonographConstants;
 import com.dimowner.phonograph.data.FileRepository;
 import com.dimowner.phonograph.util.FileUtil;
 
@@ -59,11 +59,11 @@ public class SettingsPresenter implements SettingsContract.UserActionsListener {
 		if (view != null) {
 			view.showStoreInPublicDir(prefs.isStoreDirPublic());
 			view.showAskToRenameAfterRecordingStop(prefs.isAskToRenameAfterStopRecording());
-			view.showRecordInStereo(prefs.getRecordChannelCount() == AppConstants.RECORD_AUDIO_STEREO);
+			view.showRecordInStereo(prefs.getRecordChannelCount() == PhonographConstants.RECORD_AUDIO_STEREO);
 			view.showKeepScreenOn(prefs.isKeepScreenOn());
 			int format = prefs.getFormat();
 			view.showRecordingFormat(format);
-			if (format == AppConstants.RECORDING_FORMAT_WAV) {
+			if (format == PhonographConstants.RECORDING_FORMAT_WAV) {
 				view.hideBitrateSelector();
 			} else {
 				view.showBitrateSelector();
@@ -74,19 +74,19 @@ public class SettingsPresenter implements SettingsContract.UserActionsListener {
 
 		int pos;
 		switch (prefs.getSampleRate()) {
-			case AppConstants.RECORD_SAMPLE_RATE_8000:
+			case PhonographConstants.RECORD_SAMPLE_RATE_8000:
 				pos = 0;
 				break;
-			case AppConstants.RECORD_SAMPLE_RATE_16000:
+			case PhonographConstants.RECORD_SAMPLE_RATE_16000:
 				pos = 1;
 				break;
-			case AppConstants.RECORD_SAMPLE_RATE_32000:
+			case PhonographConstants.RECORD_SAMPLE_RATE_32000:
 				pos = 2;
 				break;
-			case AppConstants.RECORD_SAMPLE_RATE_48000:
+			case PhonographConstants.RECORD_SAMPLE_RATE_48000:
 				pos = 4;
 				break;
-			case AppConstants.RECORD_SAMPLE_RATE_44100:
+			case PhonographConstants.RECORD_SAMPLE_RATE_44100:
 			default:
 				pos = 3;
 		}
@@ -95,20 +95,20 @@ public class SettingsPresenter implements SettingsContract.UserActionsListener {
 		}
 
 		switch (prefs.getBitrate()) {
-			case AppConstants.RECORD_ENCODING_BITRATE_24000:
+			case PhonographConstants.RECORD_ENCODING_BITRATE_24000:
 				pos = 0;
 				break;
-			case AppConstants.RECORD_ENCODING_BITRATE_48000:
+			case PhonographConstants.RECORD_ENCODING_BITRATE_48000:
 			default:
 				pos = 1;
 				break;
-			case AppConstants.RECORD_ENCODING_BITRATE_96000:
+			case PhonographConstants.RECORD_ENCODING_BITRATE_96000:
 				pos = 2;
 				break;
-			case AppConstants.RECORD_ENCODING_BITRATE_128000:
+			case PhonographConstants.RECORD_ENCODING_BITRATE_128000:
 				pos = 3;
 				break;
-			case AppConstants.RECORD_ENCODING_BITRATE_192000:
+			case PhonographConstants.RECORD_ENCODING_BITRATE_192000:
 				pos = 4;
 				break;
 		}
@@ -143,20 +143,20 @@ public class SettingsPresenter implements SettingsContract.UserActionsListener {
 		int rate;
 		switch (pos) {
 			case 0:
-				rate = AppConstants.RECORD_ENCODING_BITRATE_24000;
+				rate = PhonographConstants.RECORD_ENCODING_BITRATE_24000;
 				break;
 			case 1:
 			default:
-				rate = AppConstants.RECORD_ENCODING_BITRATE_48000;
+				rate = PhonographConstants.RECORD_ENCODING_BITRATE_48000;
 				break;
 			case 2:
-				rate = AppConstants.RECORD_ENCODING_BITRATE_96000;
+				rate = PhonographConstants.RECORD_ENCODING_BITRATE_96000;
 				break;
 			case 3:
-				rate = AppConstants.RECORD_ENCODING_BITRATE_128000;
+				rate = PhonographConstants.RECORD_ENCODING_BITRATE_128000;
 				break;
 			case 4:
-				rate = AppConstants.RECORD_ENCODING_BITRATE_192000;
+				rate = PhonographConstants.RECORD_ENCODING_BITRATE_192000;
 				break;
 		}
 		prefs.setBitrate(rate);
@@ -168,7 +168,7 @@ public class SettingsPresenter implements SettingsContract.UserActionsListener {
 		prefs.setFormat(format);
 		updateAvailableSpace();
 		if (view != null) {
-			if (format == AppConstants.RECORDING_FORMAT_WAV) {
+			if (format == PhonographConstants.RECORDING_FORMAT_WAV) {
 				view.hideBitrateSelector();
 			} else {
 				view.showBitrateSelector();
@@ -186,20 +186,20 @@ public class SettingsPresenter implements SettingsContract.UserActionsListener {
 		int rate;
 		switch (pos) {
 			case 0:
-				rate = AppConstants.RECORD_SAMPLE_RATE_8000;
+				rate = PhonographConstants.RECORD_SAMPLE_RATE_8000;
 				break;
 			case 1:
-				rate = AppConstants.RECORD_SAMPLE_RATE_16000;
+				rate = PhonographConstants.RECORD_SAMPLE_RATE_16000;
 				break;
 			case 2:
-				rate = AppConstants.RECORD_SAMPLE_RATE_32000;
+				rate = PhonographConstants.RECORD_SAMPLE_RATE_32000;
 				break;
 			case 4:
-				rate = AppConstants.RECORD_SAMPLE_RATE_48000;
+				rate = PhonographConstants.RECORD_SAMPLE_RATE_48000;
 				break;
 			case 3:
 			default:
-				rate = AppConstants.RECORD_SAMPLE_RATE_44100;
+				rate = PhonographConstants.RECORD_SAMPLE_RATE_44100;
 		}
 		prefs.setSampleRate(rate);
 		updateAvailableSpace();
@@ -233,9 +233,9 @@ public class SettingsPresenter implements SettingsContract.UserActionsListener {
 	}
 
 	private long spaceToTimeSecs(long spaceBytes, int format, int sampleRate, int channels) {
-		if (format == AppConstants.RECORDING_FORMAT_M4A) {
-			return 1000 * (spaceBytes/(AppConstants.RECORD_ENCODING_BITRATE_48000 /8));
-		} else if (format == AppConstants.RECORDING_FORMAT_WAV) {
+		if (format == PhonographConstants.RECORDING_FORMAT_M4A) {
+			return 1000 * (spaceBytes/(PhonographConstants.RECORD_ENCODING_BITRATE_48000 /8));
+		} else if (format == PhonographConstants.RECORDING_FORMAT_WAV) {
 			return 1000 * (spaceBytes/(sampleRate * channels * 2));
 		} else {
 			return 0;

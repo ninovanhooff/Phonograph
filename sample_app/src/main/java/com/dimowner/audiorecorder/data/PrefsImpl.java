@@ -21,6 +21,7 @@ import android.content.SharedPreferences;
 
 import com.dimowner.audiorecorder.AppConstants;
 import com.dimowner.audiorecorder.R;
+import com.dimowner.phonograph.PhonographConstants;
 import com.dimowner.phonograph.util.FileUtil;
 
 /**
@@ -192,7 +193,7 @@ public class PrefsImpl implements Prefs {
 
 	@Override
 	public int getBitrate() {
-		return sharedPreferences.getInt(PREF_KEY_BITRATE, AppConstants.RECORD_ENCODING_BITRATE_128000);
+		return sharedPreferences.getInt(PREF_KEY_BITRATE, PhonographConstants.RECORD_ENCODING_BITRATE_128000);
 	}
 
 	@Override
@@ -204,7 +205,7 @@ public class PrefsImpl implements Prefs {
 
 	@Override
 	public int getSampleRate() {
-		return sharedPreferences.getInt(PREF_KEY_SAMPLE_RATE, AppConstants.RECORD_SAMPLE_RATE_44100);
+		return sharedPreferences.getInt(PREF_KEY_SAMPLE_RATE, PhonographConstants.RECORD_SAMPLE_RATE_44100);
 	}
 
 	/** Not user-settable for now. Returns app name */

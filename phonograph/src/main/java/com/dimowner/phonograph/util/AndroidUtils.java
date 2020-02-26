@@ -16,7 +16,11 @@
 
 package com.dimowner.phonograph.util;
 
+import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Point;
+import android.view.Display;
+import android.view.WindowManager;
 
 import com.dimowner.phonograph.Phonograph;
 
@@ -71,6 +75,15 @@ public class AndroidUtils {
 
 	public static int convertPxToMills(long px, float pxPerSecond) {
 		return (int) (1000 * px / pxPerSecond);
+	}
+
+	public static int getScreenWidth(Context context) {
+		WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+		assert wm != null;
+		Display display = wm.getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		return size.x;
 	}
 
 	public static void runOnUIThread(Runnable runnable) {

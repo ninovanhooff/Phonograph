@@ -20,9 +20,9 @@ import android.app.Application;
 import android.os.Handler;
 
 import com.dimowner.audiorecorder.app.main.MainActivity;
-import com.dimowner.audiorecorder.util.AndroidUtils;
 import com.dimowner.phonograph.BuildConfig;
 import com.dimowner.phonograph.Phonograph;
+import com.dimowner.phonograph.util.AndroidUtils;
 
 import timber.log.Timber;
 

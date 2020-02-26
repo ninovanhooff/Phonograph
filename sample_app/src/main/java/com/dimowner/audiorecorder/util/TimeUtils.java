@@ -26,6 +26,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import androidx.annotation.NonNull;
+
 public class TimeUtils {
 
 	/** Date format: May 16, 03:30 PM */
@@ -52,6 +54,7 @@ public class TimeUtils {
 	private TimeUtils() {
 	}
 
+	@NonNull
 	public static String formatTimeIntervalMinSec(long length) {
 		TimeUnit timeUnit = TimeUnit.MILLISECONDS;
 //		if (length < 0) {
@@ -66,6 +69,7 @@ public class TimeUtils {
 //		}
 	}
 
+	@NonNull
 	public static String formatTimeIntervalHourMinSec2(long length) {
 		TimeUnit timeUnit = TimeUnit.MILLISECONDS;
 		long numHour = timeUnit.toHours(length);

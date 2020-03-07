@@ -17,7 +17,9 @@
 package com.dimowner.phonograph.audio.recorder;
 
 import android.media.AudioFormat;
+import android.media.AudioManager;
 import android.media.AudioRecord;
+import android.media.AudioTrack;
 import android.media.MediaRecorder;
 
 import com.dimowner.phonograph.Phonograph;
@@ -37,9 +39,10 @@ import timber.log.Timber;
 
 import static com.dimowner.phonograph.PhonographConstants.VISUALIZATION_INTERVAL;
 
-public class WavRecorder implements RecorderContract.Recorder {
+public class WavRecorder implements RecorderContract.Recorder, RecorderContract.RecorderMonitor {
 
 	private AudioRecord recorder = null;
+	private AudioTrack audioTrack = null;
 
 	private static final int RECORDER_BPP = 16; //bits per sample
 
@@ -50,6 +53,7 @@ public class WavRecorder implements RecorderContract.Recorder {
 
 	private boolean isRecording = false;
 	private boolean isPaused = false;
+	private boolean isMonitoring = false;
 
 	private int channelCount = 1;
 
@@ -204,8 +208,48 @@ public class WavRecorder implements RecorderContract.Recorder {
 	}
 
 	@Override
+	public void startMonitoring() {
+		if (isMonitoring){
+			return;
+		}
+
+		try {
+			audioTrack = new AudioTrack(
+					AudioManager.STREAM_MUSIC,
+					this.sampleRate,
+					channelCount == 1 ? AudioFormat.CHANNEL_OUT_MONO : AudioFormat.CHANNEL_OUT_STEREO,
+					AudioFormat.ENCODING_PCM_16BIT,
+					bufferSize,
+					AudioTrack.MODE_STREAM);
+			if (audioTrack.getState() == AudioTrack.STATE_INITIALIZED){
+				audioTrack.play();
+				isMonitoring = true;
+			} else {
+				stopMonitoring();
+			}
+		} catch (IllegalArgumentException e){
+			Timber.e(e, "Could not start monitoring");
+			stopMonitoring();
+		}
+	}
+
+	@Override
+	public void stopMonitoring() {
+		if (audioTrack != null) {
+			audioTrack.stop();
+			audioTrack.release();
+			isMonitoring = false;
+		}
+	}
+
+	@Override
 	public boolean isRecording() {
 		return isRecording;
+	}
+
+	@Override
+	public boolean isMonitoring() {
+		return isMonitoring;
 	}
 
 	@Override
@@ -229,6 +273,9 @@ public class WavRecorder implements RecorderContract.Recorder {
 			while (isRecording) {
 				if (!isPaused) {
 					chunksCount += recorder.read(data, 0, bufferSize);
+					if (isMonitoring){
+						audioTrack.write(data, 0, bufferSize);
+					}
 					if (AudioRecord.ERROR_INVALID_OPERATION != chunksCount) {
 						lastVal = (Math.abs((data[0]) + (data[1] << 8))
 								+ Math.abs((data[2]) + (data[3] << 8)))

@@ -40,4 +40,11 @@ public interface RecorderContract {
 		boolean isRecording();
 		boolean isPaused();
 	}
+
+	/** Supports live playback of the input **/
+	interface RecorderMonitor {
+		void startMonitoring();
+		void stopMonitoring();
+		boolean isMonitoring();
+	}
 }

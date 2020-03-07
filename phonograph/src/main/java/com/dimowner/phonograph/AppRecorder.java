@@ -17,5 +17,10 @@ public interface AppRecorder {
 	boolean isRecording();
 	boolean isPaused();
 	boolean isProcessing();
+	boolean supportsMonitoring();
+	/** Start monitoring if the Recorder supports it*/
+	void startMonitoring();
+	void stopMonitoring();
+	boolean isMonitoring();
 	void release();
 }

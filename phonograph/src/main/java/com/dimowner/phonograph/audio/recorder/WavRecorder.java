@@ -38,8 +38,9 @@ import java.util.TimerTask;
 import timber.log.Timber;
 
 import static com.dimowner.phonograph.PhonographConstants.VISUALIZATION_INTERVAL;
+import static java.lang.Thread.sleep;
 
-public class WavRecorder implements RecorderContract.Recorder, RecorderContract.RecorderMonitor {
+public class WavRecorder implements RecorderContract.Recorder, RecorderContract.Monitor {
 
 	private AudioRecord recorder = null;
 	private AudioTrack audioTrack = null;
@@ -51,9 +52,13 @@ public class WavRecorder implements RecorderContract.Recorder, RecorderContract.
 
 	private Thread recordingThread;
 
-	private boolean isRecording = false;
-	private boolean isPaused = false;
-	private boolean isMonitoring = false;
+	/** Microphone active */
+	private volatile boolean isCapturing = false;
+	/** Saving to file */
+	private volatile boolean isRecording = false;
+	private volatile boolean isPaused = false;
+	/** Piping capture to audio out */
+	private volatile boolean isMonitoring = false;
 
 	private int channelCount = 1;
 
@@ -70,7 +75,7 @@ public class WavRecorder implements RecorderContract.Recorder, RecorderContract.
 	private static class WavRecorderSingletonHolder {
 		private static WavRecorder singleton = new WavRecorder();
 
-		public static WavRecorder getSingleton() {
+		static WavRecorder getSingleton() {
 			return WavRecorderSingletonHolder.singleton;
 		}
 	}
@@ -87,95 +92,42 @@ public class WavRecorder implements RecorderContract.Recorder, RecorderContract.
 	}
 
 	@Override
-	public void prepare(String outputFile, int channelCount, int sampleRate, int bitrate) {
-		Timber.v("prepare file: %s", outputFile + " channelCount = " + channelCount);
+	public void prepare(int channelCount, int sampleRate, int bitrate){
 		this.sampleRate = sampleRate;
-//		this.framesPerVisInterval = (int)((VISUALIZATION_INTERVAL/1000f)/(1f/sampleRate));
 		this.channelCount = channelCount;
-		recordFile = new File(outputFile);
-		if (recordFile.exists() && recordFile.isFile()) {
-			int channel = channelCount == 1 ? AudioFormat.CHANNEL_IN_MONO : AudioFormat.CHANNEL_IN_STEREO;
-			try {
-				bufferSize = AudioRecord.getMinBufferSize(sampleRate,
-						channel,
-						AudioFormat.ENCODING_PCM_16BIT);
-				Timber.v("buffer size = %s", bufferSize);
-				if (bufferSize == AudioRecord.ERROR || bufferSize == AudioRecord.ERROR_BAD_VALUE) {
-					bufferSize = AudioRecord.getMinBufferSize(sampleRate,
-							channel,
-							AudioFormat.ENCODING_PCM_16BIT);
-				}
-				recorder = new AudioRecord(
-						MediaRecorder.AudioSource.MIC,
-						sampleRate,
-						channel,
-						AudioFormat.ENCODING_PCM_16BIT,
-						bufferSize
-				);
-			} catch (IllegalArgumentException e) {
-				Timber.e(e, "sampleRate = " + sampleRate + " channel = " + channel + " bufferSize = " + bufferSize);
-				if (recorder != null) {
-					recorder.release();
-				}
-			}
-			if (recorder != null && recorder.getState() == AudioRecord.STATE_INITIALIZED) {
-				if (recorderCallback != null) {
-					recorderCallback.onPrepareRecord();
-				}
-			} else {
-				Timber.e("prepare() failed");
-				if (recorderCallback != null) {
-					recorderCallback.onError(new RecorderInitException());
-				}
-			}
-		} else {
-			if (recorderCallback != null) {
-				recorderCallback.onError(new InvalidOutputFile());
-			}
-		}
+		//wav has no compression, so ignoring bitrate parameter
+		Timber.d("WavRecorder prepared");
+		startCapturing();
 	}
 
 	@Override
-	public void startRecording() {
-		if (recorder != null && recorder.getState() == AudioRecord.STATE_INITIALIZED) {
-			if (isPaused) {
-				startRecordingTimer();
-				recorder.startRecording();
-				if (recorderCallback != null) {
-					recorderCallback.onStartRecord();
-				}
-				isPaused = false;
-			} else {
-				try {
-					recorder.startRecording();
-					isRecording = true;
-					recordingThread = new Thread(new Runnable() {
-						@Override
-						public void run() {
-							writeAudioDataToFile();
-						}
-					}, "AudioRecorder Thread");
+	public void startRecording(String outputFile) {
 
-					recordingThread.start();
-					startRecordingTimer();
-					if (recorderCallback != null) {
-						recorderCallback.onStartRecord();
-					}
-					Phonograph.setRecording(true);
-				} catch (IllegalStateException e) {
-					Timber.e(e, "startRecording() failed");
-					if (recorderCallback != null) {
-						recorderCallback.onError(new RecorderInitException());
-					}
-				}
+		recordFile = new File(outputFile);
+		if (!recordFile.exists() || !recordFile.isFile()) {
+			if (recorderCallback != null) {
+				recorderCallback.onError(new InvalidOutputFile());
 			}
+			return;
+		}
+
+		if (!isCapturing){
+			startCapturing();
+		}
+
+		if (isCapturing) {
+			isRecording = true;
+			startRecordingTimer();
+			if (recorderCallback != null) {
+				recorderCallback.onStartRecord();
+			}
+			Phonograph.setRecording(true);
 		}
 	}
 
 	@Override
 	public void pauseRecording() {
 		if (isRecording) {
-			recorder.stop();
 			pauseRecordingTimer();
 
 			isPaused = true;
@@ -186,21 +138,24 @@ public class WavRecorder implements RecorderContract.Recorder, RecorderContract.
 	}
 
 	@Override
+	public void resumeRecording(){
+		if (isPaused) {
+			startRecordingTimer();
+			recorder.startRecording();
+			if (recorderCallback != null) {
+				recorderCallback.onStartRecord();
+			}
+			isPaused = false;
+		}
+	}
+
+	@Override
 	public void stopRecording() {
 		if (recorder != null) {
 			isRecording = false;
 			isPaused = false;
 			stopRecordingTimer();
-			if (recorder.getState() == AudioRecord.STATE_INITIALIZED) {
-				try {
-					recorder.stop();
-					Phonograph.setRecording(false);
-				} catch (IllegalStateException e) {
-					Timber.e(e, "stopRecording() problems");
-				}
-			}
-			recorder.release();
-			recordingThread.interrupt();
+			Phonograph.setRecording(false);
 			if (recorderCallback != null) {
 				recorderCallback.onStopRecord(recordFile);
 			}
@@ -211,6 +166,10 @@ public class WavRecorder implements RecorderContract.Recorder, RecorderContract.
 	public void startMonitoring() {
 		if (isMonitoring){
 			return;
+		}
+
+		if (!isCapturing){
+			startCapturing();
 		}
 
 		try {
@@ -224,8 +183,9 @@ public class WavRecorder implements RecorderContract.Recorder, RecorderContract.
 			if (audioTrack.getState() == AudioTrack.STATE_INITIALIZED){
 				audioTrack.play();
 				isMonitoring = true;
+				Timber.d("monitoring started");
 			} else {
-				stopMonitoring();
+				stopMonitoring(); // cleanup & reset
 			}
 		} catch (IllegalArgumentException e){
 			Timber.e(e, "Could not start monitoring");
@@ -238,7 +198,9 @@ public class WavRecorder implements RecorderContract.Recorder, RecorderContract.
 		if (audioTrack != null) {
 			audioTrack.stop();
 			audioTrack.release();
+			audioTrack = null;
 			isMonitoring = false;
+			Timber.d("monitoring stopped");
 		}
 	}
 
@@ -257,45 +219,142 @@ public class WavRecorder implements RecorderContract.Recorder, RecorderContract.
 		return isPaused;
 	}
 
-	private void writeAudioDataToFile() {
-		byte[] data = new byte[bufferSize];
+	/** Stop monitoring, recording and release the hardware resources */
+	@Override
+	public void release(){
+		stopRecording();
+		stopMonitoring();
+		stopCapturing();
+		Timber.d("WaveRecorder: released");
+	}
 
-		FileOutputStream fos;
-		try {
-			fos = new FileOutputStream(recordFile);
-		} catch (FileNotFoundException e) {
-			Timber.e(e);
-			fos = null;
+	private void startCapturing() {
+		if (recorder != null && recorder.getState() == AudioRecord.RECORDSTATE_RECORDING) {
+			return;
 		}
-		if (null != fos) {
-			int chunksCount = 0;
-			//TODO: Disable loop while pause.
-			while (isRecording) {
-				if (!isPaused) {
-					chunksCount += recorder.read(data, 0, bufferSize);
-					if (isMonitoring){
-						audioTrack.write(data, 0, bufferSize);
-					}
-					if (AudioRecord.ERROR_INVALID_OPERATION != chunksCount) {
-						lastVal = (Math.abs((data[0]) + (data[1] << 8))
-								+ Math.abs((data[2]) + (data[3] << 8)))
-								+ (Math.abs((data[4]) + (data[5] << 8))
-								+ Math.abs((data[6]) + (data[7] << 8)));
-						try {
-							fos.write(data);
-						} catch (IOException e) {
-							Timber.e(e);
-						}
-					}
+
+		if (recorder != null){
+			Timber.e("Cannot start capturing. Recorder already exists in state %s", recorder.getState());
+		}
+
+		int channel = channelCount == 1 ? AudioFormat.CHANNEL_IN_MONO : AudioFormat.CHANNEL_IN_STEREO;
+		try {
+			bufferSize = AudioRecord.getMinBufferSize(sampleRate,
+					channel,
+					AudioFormat.ENCODING_PCM_16BIT);
+			Timber.v("buffer size = %s", bufferSize);
+			if (bufferSize == AudioRecord.ERROR || bufferSize == AudioRecord.ERROR_BAD_VALUE) {
+				bufferSize = AudioRecord.getMinBufferSize(sampleRate,
+						channel,
+						AudioFormat.ENCODING_PCM_16BIT);
+			}
+			recorder = new AudioRecord(
+					MediaRecorder.AudioSource.MIC,
+					sampleRate,
+					channel,
+					AudioFormat.ENCODING_PCM_16BIT,
+					bufferSize
+			);
+		} catch (IllegalArgumentException e) {
+			Timber.e(e, "sampleRate = " + sampleRate + " channel = " + channel + " bufferSize = " + bufferSize);
+			if (recorder != null) {
+				recorder.release();
+			}
+		}
+
+		if (recorder == null || recorder.getState() != AudioRecord.STATE_INITIALIZED) {
+			Timber.e("startCapturing() failed");
+			if (recorderCallback != null) {
+				recorderCallback.onError(new RecorderInitException());
+			}
+		} else {
+			recorder.startRecording();
+			isCapturing = true;
+
+			recordingThread = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					captureLoop();
+				}
+			}, "AudioRecorder Capture Thread");
+
+			recordingThread.start();
+
+			Timber.d("WaveRecorder: capturing");
+		}
+	}
+
+	private void stopCapturing(){
+		isCapturing = false;
+		if (recordingThread != null){
+			recordingThread.interrupt();
+			recordingThread = null;
+		}
+		recorder.stop();
+		recorder.release();
+		recorder = null;
+	}
+
+	private void captureLoop() {
+		byte[] data = new byte[bufferSize];
+		FileOutputStream fos = null;
+		int bytesRead;
+
+		// the full buffer time in millis.
+		long bufferMillis = 1000 * (bufferSize * 8) / (channelCount * 16 * sampleRate);
+		// when sleeping we want to miss at most half a buffer of data
+		long pauseSleepMillis = bufferMillis / 2;
+
+		while (isCapturing) {
+			if (isPaused){
+				try {
+					sleep(pauseSleepMillis);
+					continue;
+				} catch (InterruptedException ignored) {}
+			}
+
+			if (isRecording && fos == null){
+				try {
+					Timber.d("Opening file for recording: %s", recordFile.getAbsolutePath());
+					fos = new FileOutputStream(recordFile);
+				} catch (FileNotFoundException e) {
+					Timber.e(e);
+					fos = null;
 				}
 			}
 
-			try {
-				fos.close();
-			} catch (IOException e) {
-				Timber.e(e);
+			bytesRead = recorder.read(data, 0, bufferSize);
+			if (isMonitoring){
+				audioTrack.write(data, 0, bufferSize);
 			}
-			setWaveFileHeader(recordFile, channelCount);
+			if (AudioRecord.ERROR_INVALID_OPERATION != bytesRead) {
+				lastVal = (Math.abs((data[0]) + (data[1] << 8))
+						+ Math.abs((data[2]) + (data[3] << 8)))
+						+ (Math.abs((data[4]) + (data[5] << 8))
+						+ Math.abs((data[6]) + (data[7] << 8)));
+
+				if (fos != null){
+					try {
+						fos.write(data);
+					} catch (IOException e) {
+						Timber.e(e);
+					}
+				}
+
+			}
+
+			if(!isRecording && fos != null){
+				Timber.d("Closing file: %s", recordFile.getAbsolutePath());
+				try {
+					fos.close();
+				} catch (IOException e) {
+					Timber.e(e);
+				} finally {
+					fos = null;
+				}
+				setWaveFileHeader(recordFile, channelCount);
+			}
+
 		}
 	}
 

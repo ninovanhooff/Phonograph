@@ -20,6 +20,7 @@ import android.media.MediaRecorder;
 import android.os.Build;
 
 import com.dimowner.phonograph.Phonograph;
+import com.dimowner.phonograph.exception.AppException;
 import com.dimowner.phonograph.exception.InvalidOutputFile;
 import com.dimowner.phonograph.exception.RecorderInitException;
 
@@ -48,7 +49,7 @@ public class AudioRecorder implements RecorderContract.Recorder {
 	private static class RecorderSingletonHolder {
 		private static AudioRecorder singleton = new AudioRecorder();
 
-		public static AudioRecorder getSingleton() {
+		static AudioRecorder getSingleton() {
 			return RecorderSingletonHolder.singleton;
 		}
 	}
@@ -65,73 +66,49 @@ public class AudioRecorder implements RecorderContract.Recorder {
 	}
 
 	@Override
-	public void prepare(String outputFile, int channelCount, int sampleRate, int bitrate) {
-		recordFile = new File(outputFile);
-		if (recordFile.exists() && recordFile.isFile()) {
-			recorder = new MediaRecorder();
-			recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-			recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-			recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-			recorder.setAudioChannels(channelCount);
-			recorder.setAudioSamplingRate(sampleRate);
-			recorder.setAudioEncodingBitRate(bitrate);
-			recorder.setMaxDuration(-1); //Duration unlimited
-			recorder.setOutputFile(recordFile.getAbsolutePath());
-			try {
-				recorder.prepare();
-				isPrepared = true;
-				if (recorderCallback != null) {
-					recorderCallback.onPrepareRecord();
-				}
-			} catch (IOException | IllegalStateException e) {
-				Timber.e(e, "prepare() failed");
-				if (recorderCallback != null) {
-					recorderCallback.onError(new RecorderInitException());
-				}
-			}
-		} else {
-			if (recorderCallback != null) {
-				recorderCallback.onError(new InvalidOutputFile());
-			}
-		}
+	public void prepare(int channelCount, int sampleRate, int bitrate){
+		recorder = new MediaRecorder();
+		recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+		recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+		recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+		recorder.setAudioChannels(channelCount);
+		recorder.setAudioSamplingRate(sampleRate);
+		recorder.setAudioEncodingBitRate(bitrate);
+		recorder.setMaxDuration(-1); //Duration unlimited
+		isPrepared = true;
 	}
 
 	@Override
-	public void startRecording() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && isPaused) {
+	public void startRecording(String outputFile) {
+		recordFile = new File(outputFile);
+		if (recordFile.exists() && recordFile.isFile()) {
+
+			recorder.setOutputFile(recordFile.getAbsolutePath());
 			try {
-				recorder.resume();
-				startRecordingTimer();
-				if (recorderCallback != null) {
-					recorderCallback.onStartRecord();
+				if (!isPrepared){
+					Timber.e("Recorder is not prepared!!!");
+					throw new IllegalStateException("startRecording() called before prepare()");
 				}
-				isPaused = false;
-			} catch (IllegalStateException e) {
-				Timber.e(e, "unpauseRecording() failed");
-				if (recorderCallback != null) {
-					recorderCallback.onError(new RecorderInitException());
-				}
+				recorder.prepare();
+			} catch (IOException | IllegalStateException e) {
+				Timber.e(e, "prepare() failed");
+				emitAppException(new RecorderInitException());
 			}
 		} else {
-			if (isPrepared) {
-				try {
-					recorder.start();
-					isRecording = true;
-					Phonograph.setRecording(true);
-					startRecordingTimer();
-					if (recorderCallback != null) {
-						recorderCallback.onStartRecord();
-					}
-				} catch (RuntimeException e) {
-					Timber.e(e, "startRecording() failed");
-					if (recorderCallback != null) {
-						recorderCallback.onError(new RecorderInitException());
-					}
-				}
-			} else {
-				Timber.e("Recorder is not prepared!!!");
+			emitAppException(new InvalidOutputFile());
+		}
+
+		try {
+			recorder.start();
+			isRecording = true;
+			Phonograph.setRecording(true);
+			startRecordingTimer();
+			if (recorderCallback != null) {
+				recorderCallback.onStartRecord();
 			}
-			isPaused = false;
+		} catch (RuntimeException e) {
+			Timber.e(e, "startRecording() failed");
+			emitAppException(new RecorderInitException());
 		}
 	}
 
@@ -148,14 +125,26 @@ public class AudioRecorder implements RecorderContract.Recorder {
 					isPaused = true;
 				} catch (IllegalStateException e) {
 					Timber.e(e, "pauseRecording() failed");
-					if (recorderCallback != null) {
-						//TODO: Fix exception
-						recorderCallback.onError(new RecorderInitException());
-					}
+					//TODO: Fix exception
+					emitAppException(new RecorderInitException());
 				}
+				isPaused = false;
 			} else {
 				stopRecording();
 			}
+		}
+	}
+
+	@Override
+	public void resumeRecording(){
+		if (!isPaused){
+			throw new IllegalStateException("Can only resume paused recordings");
+		}
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+			Timber.e("Resume not supported by SDK");
+			emitAppException(new RecorderInitException());
+		} else {
+			recorder.resume();
 		}
 	}
 
@@ -174,13 +163,29 @@ public class AudioRecorder implements RecorderContract.Recorder {
 				recorderCallback.onStopRecord(recordFile);
 			}
 			recordFile = null;
-			isPrepared = false;
 			isRecording = false;
 			isPaused = false;
 			recorder = null;
 		} else {
 			Timber.e("Recording has already stopped or hasn't started");
 		}
+	}
+
+	@Override
+	public void release() {
+		if (isRecording){
+			stopRecording();
+		}
+	}
+
+	@Override
+	public boolean isRecording() {
+		return isRecording;
+	}
+
+	@Override
+	public boolean isPaused() {
+		return isPaused;
 	}
 
 	private void startRecordingTimer() {
@@ -211,13 +216,9 @@ public class AudioRecorder implements RecorderContract.Recorder {
 		timerProgress.purge();
 	}
 
-	@Override
-	public boolean isRecording() {
-		return isRecording;
-	}
-
-	@Override
-	public boolean isPaused() {
-		return isPaused;
+	private void emitAppException(AppException e){
+		if (recorderCallback != null) {
+			recorderCallback.onError(e);
+		}
 	}
 }

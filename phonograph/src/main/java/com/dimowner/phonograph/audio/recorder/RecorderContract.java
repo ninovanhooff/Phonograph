@@ -23,7 +23,6 @@ import java.io.File;
 public interface RecorderContract {
 
 	interface RecorderCallback {
-		void onPrepareRecord();
 		void onStartRecord();
 		void onPauseRecord();
 		void onRecordProgress(long mills, int amp);
@@ -33,16 +32,23 @@ public interface RecorderContract {
 
 	interface Recorder {
 		void setRecorderCallback(RecorderCallback callback);
-		void prepare(String outputFile, int channelCount, int sampleRate, int bitrate);
-		void startRecording();
+		void prepare(int channelCount, int sampleRate, int bitrate);
+		void release();
+		void startRecording(String outputFile);
 		void pauseRecording();
+		void resumeRecording();
 		void stopRecording();
 		boolean isRecording();
 		boolean isPaused();
 	}
 
 	/** Supports live playback of the input **/
-	interface RecorderMonitor {
+	interface Monitor {
+		// Unused because it duplicates Recorder method.
+		// Keep to support monitor-only implementations.
+		@SuppressWarnings("unused")
+		void prepare(int channelCount, int sampleRate, int bitrate);
+		void release();
 		void startMonitoring();
 		void stopMonitoring();
 		boolean isMonitoring();

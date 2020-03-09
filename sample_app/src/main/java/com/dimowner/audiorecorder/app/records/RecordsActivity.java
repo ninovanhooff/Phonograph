@@ -57,12 +57,12 @@ import com.dimowner.audiorecorder.data.database.Record;
 import com.dimowner.audiorecorder.util.AndroidUtils;
 import com.dimowner.audiorecorder.util.AnimationUtil;
 import com.dimowner.audiorecorder.util.TimeUtils;
-import com.dimowner.phonograph.Phonograph;
-import com.dimowner.phonograph.PlaybackService;
-import com.dimowner.phonograph.util.FileUtil;
-import com.dimowner.phonograph.widget.SimpleWaveformView;
-import com.dimowner.phonograph.widget.TouchLayout;
-import com.dimowner.phonograph.widget.WaveformView;
+import com.ninovanhooff.phonograph.Phonograph;
+import com.ninovanhooff.phonograph.PlaybackService;
+import com.ninovanhooff.phonograph.util.FileUtil;
+import com.ninovanhooff.phonograph.widget.SimpleWaveformView;
+import com.ninovanhooff.phonograph.widget.TouchLayout;
+import com.ninovanhooff.phonograph.widget.WaveformView;
 
 import java.io.File;
 import java.util.ArrayList;

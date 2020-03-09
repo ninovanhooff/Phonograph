@@ -33,7 +33,7 @@ import com.dimowner.audiorecorder.AppConstants;
 import com.dimowner.audiorecorder.R;
 import com.dimowner.audiorecorder.util.AndroidUtils;
 import com.dimowner.audiorecorder.util.TimeUtils;
-import com.dimowner.phonograph.widget.SimpleWaveformView;
+import com.ninovanhooff.phonograph.widget.SimpleWaveformView;
 
 import java.util.ArrayList;
 import java.util.Calendar;

@@ -1,7 +1,7 @@
 package com.dimowner.audiorecorder;
 
 import com.dimowner.audiorecorder.data.Prefs;
-import com.dimowner.phonograph.PhonographColorMap;
+import com.ninovanhooff.phonograph.PhonographColorMap;
 
 import java.util.ArrayList;
 import java.util.List;

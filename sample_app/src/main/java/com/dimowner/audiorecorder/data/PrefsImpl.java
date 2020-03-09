@@ -21,8 +21,8 @@ import android.content.SharedPreferences;
 
 import com.dimowner.audiorecorder.AppConstants;
 import com.dimowner.audiorecorder.R;
-import com.dimowner.phonograph.PhonographConstants;
-import com.dimowner.phonograph.util.FileUtil;
+import com.ninovanhooff.phonograph.PhonographConstants;
+import com.ninovanhooff.phonograph.util.FileUtil;
 
 /**
  * App preferences implementation

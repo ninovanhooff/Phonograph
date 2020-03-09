@@ -16,7 +16,7 @@
 
 package com.dimowner.audiorecorder.data;
 
-import com.dimowner.phonograph.data.PhonographPrefs;
+import com.ninovanhooff.phonograph.data.PhonographPrefs;
 
 public interface Prefs extends PhonographPrefs {
 

@@ -35,15 +35,15 @@ import com.dimowner.audiorecorder.data.database.LocalRepository;
 import com.dimowner.audiorecorder.data.database.LocalRepositoryImpl;
 import com.dimowner.audiorecorder.data.database.RecordsDataSource;
 import com.dimowner.audiorecorder.data.database.TrashDataSource;
-import com.dimowner.phonograph.AppRecorder;
-import com.dimowner.phonograph.BackgroundQueue;
-import com.dimowner.phonograph.Phonograph;
-import com.dimowner.phonograph.audio.player.AudioPlayer;
-import com.dimowner.phonograph.audio.player.PlayerContract;
-import com.dimowner.phonograph.audio.recorder.AudioRecorder;
-import com.dimowner.phonograph.audio.recorder.RecorderContract;
-import com.dimowner.phonograph.audio.recorder.WavRecorder;
-import com.dimowner.phonograph.data.FileRepository;
+import com.ninovanhooff.phonograph.AppRecorder;
+import com.ninovanhooff.phonograph.BackgroundQueue;
+import com.ninovanhooff.phonograph.Phonograph;
+import com.ninovanhooff.phonograph.audio.player.AudioPlayer;
+import com.ninovanhooff.phonograph.audio.player.PlayerContract;
+import com.ninovanhooff.phonograph.audio.recorder.AudioRecorder;
+import com.ninovanhooff.phonograph.audio.recorder.RecorderContract;
+import com.ninovanhooff.phonograph.audio.recorder.WavRecorder;
+import com.ninovanhooff.phonograph.data.FileRepository;
 
 public class Injector {
 

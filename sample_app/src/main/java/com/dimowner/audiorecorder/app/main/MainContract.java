@@ -22,7 +22,7 @@ import android.net.Uri;
 import com.dimowner.audiorecorder.Contract;
 import com.dimowner.audiorecorder.app.info.RecordInfo;
 import com.dimowner.audiorecorder.data.database.Record;
-import com.dimowner.phonograph.audio.recorder.RecorderContract;
+import com.ninovanhooff.phonograph.audio.recorder.RecorderContract;
 
 import java.io.File;
 import java.util.List;

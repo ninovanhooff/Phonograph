@@ -16,7 +16,7 @@ import com.dimowner.audiorecorder.R;
 import com.dimowner.audiorecorder.app.info.ActivityInformation;
 import com.dimowner.audiorecorder.app.info.RecordInfo;
 import com.dimowner.audiorecorder.util.AndroidUtils;
-import com.dimowner.phonograph.util.FileUtil;
+import com.ninovanhooff.phonograph.util.FileUtil;
 
 import java.util.ArrayList;
 import java.util.List;

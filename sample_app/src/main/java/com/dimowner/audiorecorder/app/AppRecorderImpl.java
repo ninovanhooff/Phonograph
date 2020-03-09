@@ -59,10 +59,6 @@ public class AppRecorderImpl implements AppRecorder {
 		this.recordingData = new ArrayList<>();
 
 		recorderCallback = new RecorderContract.RecorderCallback() {
-			@Override
-			public void onPrepareRecord() {
-				audioRecorder.startRecording();
-			}
 
 			@Override
 			public void onStartRecord() {
@@ -193,7 +189,8 @@ public class AppRecorderImpl implements AppRecorder {
 	@Override
 	public void startRecording(String filePath) {
 		if (!audioRecorder.isRecording()) {
-			audioRecorder.prepare(filePath, prefs.getRecordChannelCount(), prefs.getSampleRate(), prefs.getBitrate());
+			audioRecorder.prepare(prefs.getRecordChannelCount(), prefs.getSampleRate(), prefs.getBitrate());
+			audioRecorder.startRecording(filePath);
 		}
 	}
 
@@ -207,7 +204,7 @@ public class AppRecorderImpl implements AppRecorder {
 	@Override
 	public void resumeRecording() {
 		if (audioRecorder.isPaused()) {
-			audioRecorder.startRecording();
+			audioRecorder.resumeRecording();
 		}
 	}
 
@@ -243,6 +240,22 @@ public class AppRecorderImpl implements AppRecorder {
 	@Override
 	public boolean isProcessing() {
 		return isProcessing;
+	}
+
+	@Override
+	public boolean supportsMonitoring() {
+		return false;
+	}
+
+	@Override
+	public void startMonitoring() {}
+
+	@Override
+	public void stopMonitoring() {}
+
+	@Override
+	public boolean isMonitoring() {
+		return false;
 	}
 
 	private void onRecordingStarted() {

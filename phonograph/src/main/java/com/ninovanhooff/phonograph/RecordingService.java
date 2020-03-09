@@ -30,11 +30,13 @@ import androidx.core.app.NotificationManagerCompat;
 
 public class RecordingService extends Service {
 
-	private final static String CHANNEL_NAME = "Default";
-	private final static String CHANNEL_ID = "com.dimowner.audiorecorder.NotificationId";
+	private final static String CHANNEL_DEFAULT_NAME = "Default";
+	private final static String CHANNEL_DEFAULT_ID = "com.dimowner.audiorecorder.NotificationId";
+	private final static int CHANNEL_DEFAULT_PRIORITY = NotificationCompat.PRIORITY_LOW;
 
-	private final static String CHANNEL_NAME_ERRORS = "Errors";
-	private final static String CHANNEL_ID_ERRORS = "com.dimowner.audiorecorder.Errors";
+	private final static String CHANNEL_ERRORS_NAME = "Errors";
+	private final static String CHANNEL_ERRORS_ID = "com.dimowner.audiorecorder.Errors";
+	private final static int CHANNEL_ERRORS_PRIORITY = NotificationCompat.PRIORITY_MAX;
 
 	public static final String ACTION_START_RECORDING_SERVICE = "ACTION_START_RECORDING_SERVICE";
 
@@ -105,10 +107,10 @@ public class RecordingService extends Service {
 
 	public void showNoSpaceNotification() {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			createNotificationChannel(CHANNEL_ID_ERRORS, CHANNEL_NAME_ERRORS);
+			createNotificationChannel(CHANNEL_ERRORS_ID, CHANNEL_ERRORS_NAME, CHANNEL_ERRORS_PRIORITY);
 		}
 		NotificationCompat.Builder builder =
-				new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
+				new NotificationCompat.Builder(getApplicationContext(), CHANNEL_DEFAULT_ID)
 						.setSmallIcon(R.drawable.ic_phonograph_record_rec)
 						.setContentTitle(getApplicationContext().getString(R.string.app_name))
 						.setContentText(getApplicationContext().getString(R.string.error_no_available_space))
@@ -117,7 +119,7 @@ public class RecordingService extends Service {
 						.setLights(Color.RED, 500, 500)
 						.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
 						.setAutoCancel(true)
-						.setPriority(NotificationCompat.PRIORITY_MAX);
+						.setPriority(CHANNEL_ERRORS_PRIORITY);
 
 		NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
 		notificationManager.notify(303, builder.build());
@@ -178,7 +180,7 @@ public class RecordingService extends Service {
 		notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			createNotificationChannel(CHANNEL_ID, CHANNEL_NAME);
+			createNotificationChannel(CHANNEL_DEFAULT_ID, CHANNEL_DEFAULT_NAME, CHANNEL_DEFAULT_PRIORITY);
 		}
 
 		remoteViewsSmall = new RemoteViews(getPackageName(), R.layout.layout_record_notification_small);
@@ -188,11 +190,11 @@ public class RecordingService extends Service {
 		remoteViewsSmall.setInt(R.id.container, "setBackgroundColor", this.getResources().getColor(colorMap.getPrimaryColorRes()));
 
 		// Create notification builder.
-		builder = new NotificationCompat.Builder(this, CHANNEL_ID);
+		builder = new NotificationCompat.Builder(this, CHANNEL_DEFAULT_ID);
 
 		builder.setWhen(System.currentTimeMillis());
 		builder.setSmallIcon(R.drawable.ic_phonograph_record);
-		builder.setPriority(Notification.PRIORITY_MAX);
+		builder.setPriority(CHANNEL_DEFAULT_PRIORITY);
 		// Make head-up notification.
 		builder.setContentIntent(createContentIntent());
 		builder.setCustomContentView(remoteViewsSmall);
@@ -225,11 +227,10 @@ public class RecordingService extends Service {
 	}
 
 	@RequiresApi(Build.VERSION_CODES.O)
-	private String createNotificationChannel(String channelId, String channelName) {
+	private String createNotificationChannel(String channelId, String channelName, int channelPriority) {
 		NotificationChannel channel = notificationManager.getNotificationChannel(channelId);
 		if (channel == null) {
-			NotificationChannel chan = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
-			chan.setLightColor(Color.BLUE);
+			NotificationChannel chan = new NotificationChannel(channelId, channelName, channelPriority);
 			chan.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
 			chan.setSound(null, null);
 			chan.enableLights(false);

@@ -33,10 +33,12 @@ public class RecordingService extends Service {
 	private final static String CHANNEL_DEFAULT_NAME = "Default";
 	private final static String CHANNEL_DEFAULT_ID = "com.dimowner.audiorecorder.NotificationId";
 	private final static int CHANNEL_DEFAULT_PRIORITY = NotificationCompat.PRIORITY_LOW;
+	private final static int CHANNEL_DEFAULT_IMPORTANCE = NotificationManagerCompat.IMPORTANCE_LOW;
 
 	private final static String CHANNEL_ERRORS_NAME = "Errors";
 	private final static String CHANNEL_ERRORS_ID = "com.dimowner.audiorecorder.Errors";
 	private final static int CHANNEL_ERRORS_PRIORITY = NotificationCompat.PRIORITY_MAX;
+	private final static int CHANNEL_ERRORS_IMPORTANCE = NotificationManagerCompat.IMPORTANCE_MAX;
 
 	public static final String ACTION_START_RECORDING_SERVICE = "ACTION_START_RECORDING_SERVICE";
 
@@ -107,7 +109,7 @@ public class RecordingService extends Service {
 
 	public void showNoSpaceNotification() {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			createNotificationChannel(CHANNEL_ERRORS_ID, CHANNEL_ERRORS_NAME, CHANNEL_ERRORS_PRIORITY);
+			createNotificationChannel(CHANNEL_ERRORS_ID, CHANNEL_ERRORS_NAME, CHANNEL_ERRORS_IMPORTANCE);
 		}
 		NotificationCompat.Builder builder =
 				new NotificationCompat.Builder(getApplicationContext(), CHANNEL_DEFAULT_ID)
@@ -180,7 +182,7 @@ public class RecordingService extends Service {
 		notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			createNotificationChannel(CHANNEL_DEFAULT_ID, CHANNEL_DEFAULT_NAME, CHANNEL_DEFAULT_PRIORITY);
+			createNotificationChannel(CHANNEL_DEFAULT_ID, CHANNEL_DEFAULT_NAME, CHANNEL_DEFAULT_IMPORTANCE);
 		}
 
 		remoteViewsSmall = new RemoteViews(getPackageName(), R.layout.layout_record_notification_small);
@@ -227,10 +229,10 @@ public class RecordingService extends Service {
 	}
 
 	@RequiresApi(Build.VERSION_CODES.O)
-	private String createNotificationChannel(String channelId, String channelName, int channelPriority) {
+	private String createNotificationChannel(String channelId, String channelName, int channelImportance) {
 		NotificationChannel channel = notificationManager.getNotificationChannel(channelId);
 		if (channel == null) {
-			NotificationChannel chan = new NotificationChannel(channelId, channelName, channelPriority);
+			NotificationChannel chan = new NotificationChannel(channelId, channelName, channelImportance);
 			chan.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
 			chan.setSound(null, null);
 			chan.enableLights(false);

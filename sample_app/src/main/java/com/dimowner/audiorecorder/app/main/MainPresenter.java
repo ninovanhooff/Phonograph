@@ -177,7 +177,10 @@ public class MainPresenter implements MainContract.UserActionsListener {
 				}
 
 				@Override
-				public void onRecordingProgress(final long mills, final int amp) {
+				public void onProgress(final long mills, final int amp, final boolean isActive) {
+					if (!isActive){
+						return; // not recording
+					}
 					AndroidUtils.runOnUIThread(new Runnable() {
 						@Override
 						public void run() {

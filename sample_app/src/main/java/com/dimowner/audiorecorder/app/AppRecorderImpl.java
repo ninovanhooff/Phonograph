@@ -71,8 +71,8 @@ public class AppRecorderImpl implements AppRecorder {
 			}
 
 			@Override
-			public void onRecordProgress(final long mills, final int amplitude) {
-				onRecordingProgress(mills, amplitude);
+			public void onProgress(final long mills, final int amplitude, boolean isRecording) {
+				onRecordingProgress(mills, amplitude, isRecording);
 				recordingData.add(amplitude);
 			}
 
@@ -203,7 +203,7 @@ public class AppRecorderImpl implements AppRecorder {
 
 	@Override
 	public void resumeRecording() {
-		if (audioRecorder.isPaused()) {
+		if (audioRecorder.isRecordingPaused()) {
 			audioRecorder.resumeRecording();
 		}
 	}
@@ -227,7 +227,7 @@ public class AppRecorderImpl implements AppRecorder {
 
 	@Override
 	public boolean isPaused() {
-		return audioRecorder.isPaused();
+		return audioRecorder.isRecordingPaused();
 	}
 
 	@Override
@@ -300,10 +300,10 @@ public class AppRecorderImpl implements AppRecorder {
 		}
 	}
 
-	private void onRecordingProgress(long mills, int amp) {
+	private void onRecordingProgress(long mills, int amp, boolean isRecording) {
 		if (!appCallbacks.isEmpty()) {
 			for (int i = 0; i < appCallbacks.size(); i++) {
-				appCallbacks.get(i).onRecordingProgress(mills, amp);
+				appCallbacks.get(i).onProgress(mills, amp, isRecording);
 			}
 		}
 	}

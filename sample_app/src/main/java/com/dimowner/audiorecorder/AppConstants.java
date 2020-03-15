@@ -40,7 +40,7 @@ public class AppConstants {
 
 	public final static long RECORD_IN_TRASH_MAX_DURATION = 5184000000L; // 1000 X 60 X 60 X 24 X 60 = 60 Days
 
-	//BEGINNING-------------- Waveform visualisation constants ----------------------------------
+	//BEGINNING-------------- Waveform visualization constants ----------------------------------
 
 
 
@@ -49,10 +49,10 @@ public class AppConstants {
 	public static final int SHORT_RECORD_DP_PER_SECOND = 25;
 
 	/** Threshold in second which defines when record is considered as long or short.
-	 *  For short and long records used a bit different visualisation algorithm. */
+	 *  For short and long records used a bit different visualization algorithm. */
 	public static final int LONG_RECORD_THRESHOLD_SECONDS = 20;
 
-	//END-------------- Waveform visualisation constants ----------------------------------------
+	//END-------------- Waveform visualization constants ----------------------------------------
 
 	public static final int SORT_DATE = 1;
 	public static final int SORT_NAME = 2;

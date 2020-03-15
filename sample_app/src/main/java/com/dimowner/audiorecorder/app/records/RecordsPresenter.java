@@ -92,7 +92,7 @@ public class RecordsPresenter implements RecordsContract.UserActionsListener {
 					loadRecords();
 				}
 
-				@Override public void onRecordingProgress(long mills, int amp) {}
+				@Override public void onProgress(long mills, int amp, boolean isRecording) {}
 
 				@Override
 				public void onRecordingStopped(long id, File file) {

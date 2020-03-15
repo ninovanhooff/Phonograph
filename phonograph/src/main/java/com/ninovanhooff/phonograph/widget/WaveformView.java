@@ -58,6 +58,7 @@ public class WaveformView extends View {
 
 	private int[] waveForm;
 
+	/** contains scaled amplitudes if {@link #isMeasured}, or raw values otherwise */
 	private List<Integer> recordingData;
 	private long totalRecordingSize;
 	private boolean showRecording = false;
@@ -299,7 +300,10 @@ public class WaveformView extends View {
 		}
 		totalRecordingSize++;
 		updateShifts((int) -AndroidUtils.dpToPx(totalRecordingSize));
-		recordingData.add(convertAmp(amp));
+		if (isMeasured){
+			amp = convertAmp(amp);
+		}
+		recordingData.add(amp);
 		if (recordingData.size() > AndroidUtils.pxToDp(viewWidth/2)) {
 			recordingData.remove(0);
 		}
@@ -310,7 +314,11 @@ public class WaveformView extends View {
 		if (data != null) {
 			recordingData.clear();
 			for (int i = 0; i < data.size(); i++) {
-				recordingData.add(convertAmp(data.get(i)));
+				if (isMeasured){
+					recordingData.add(convertAmp(data.get(i)));
+				} else {
+					recordingData.add(data.get(i));
+				}
 			}
 			totalRecordingSize = recordingData.size();
 			updateShifts((int) -AndroidUtils.dpToPx(totalRecordingSize));
@@ -344,7 +352,12 @@ public class WaveformView extends View {
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-		if (!isMeasured) isMeasured = true;
+		if (!isMeasured){
+			for (int i = 0; i < recordingData.size(); i++){
+				recordingData.set(i, convertAmp(recordingData.get(i)));
+			}
+			isMeasured = true;
+		}
 		// Reconcile the measured dimensions with the this view's constraints and
 		// set the final measured viewWidth and height.
 		int width = MeasureSpec.getSize(widthMeasureSpec);
@@ -430,7 +443,7 @@ public class WaveformView extends View {
 		}
 
 		for (float i = -2f; i < count; i+=2) {
-			//Draw seconds marks
+			//Draw seconds text
 			float xPos = i * DEFAULT_PIXEL_PER_SECOND + gridShift;
 			long mills = (long)((-waveformShift/(DEFAULT_PIXEL_PER_SECOND) + gridShift/ DEFAULT_PIXEL_PER_SECOND + i)  * 1000);
 			if (mills >= 0) {

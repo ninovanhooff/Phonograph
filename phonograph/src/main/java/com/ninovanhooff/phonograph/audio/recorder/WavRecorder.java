@@ -120,6 +120,7 @@ public class WavRecorder implements RecorderContract.Recorder, RecorderContract.
 
 		if (isCapturing) {
 			isRecording = true;
+			progress = 0L;
 			if (recorderCallback != null) {
 				recorderCallback.onStartRecord();
 			}
@@ -257,6 +258,7 @@ public class WavRecorder implements RecorderContract.Recorder, RecorderContract.
 			Timber.e(e, "sampleRate = " + sampleRate + " channel = " + channel + " bufferSize = " + bufferSize);
 			if (recorder != null) {
 				recorder.release();
+				recorder = null;
 			}
 		}
 
@@ -465,7 +467,7 @@ public class WavRecorder implements RecorderContract.Recorder, RecorderContract.
 			timerProgress.cancel();
 			timerProgress.purge();
 		}
-		progress = 0;
+		progress = 0L;
 	}
 
 }

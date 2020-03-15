@@ -25,8 +25,13 @@ public interface RecorderContract {
 	interface RecorderCallback {
 		void onStartRecord();
 		void onPauseRecord();
-		void onRecordProgress(long mills, int amp);
 		void onStopRecord(File output);
+		/** Live recording and visualization data
+		 * @param mills The recording progress / duration
+		 * @param amp maximum signal amplitude for the last sample
+		 * @param isRecording Whether an recording is active. false when paused or stopped
+		 */
+		void onProgress(long mills, int amp, boolean isRecording);
 		void onError(AppException throwable);
 	}
 
@@ -39,7 +44,7 @@ public interface RecorderContract {
 		void resumeRecording();
 		void stopRecording();
 		boolean isRecording();
-		boolean isPaused();
+		boolean isRecordingPaused();
 	}
 
 	/** Supports live playback of the input **/

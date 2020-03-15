@@ -10,6 +10,6 @@ public interface AppRecorderCallback {
 	void onRecordProcessing();
 	void onRecordFinishProcessing();
 	void onRecordingStopped(long id, File file);
-	void onRecordingProgress(long mills, int amp);
+	void onProgress(long mills, int amp, boolean isRecording);
 	void onError(AppException throwable);
 }

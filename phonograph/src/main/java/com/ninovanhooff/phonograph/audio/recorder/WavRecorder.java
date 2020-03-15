@@ -55,13 +55,14 @@ public class WavRecorder implements RecorderContract.Recorder, RecorderContract.
 	private volatile boolean isCapturing = false;
 	/** Saving to file */
 	private volatile boolean isRecording = false;
-	private volatile boolean isPaused = false;
+	/** Whether recording is paused */
+	private volatile boolean isRecordingPaused = false;
 	/** Piping capture to audio out */
 	private volatile boolean isMonitoring = false;
 
 	private int channelCount = 1;
 
-	/** Value for recording used visualisation. */
+	/** Value for recording used visualization. */
 	private int lastVal = 0;
 
 	private Timer timerProgress;
@@ -101,6 +102,9 @@ public class WavRecorder implements RecorderContract.Recorder, RecorderContract.
 
 	@Override
 	public void startRecording(String outputFile) {
+		if (isRecording){
+			stopRecording();
+		}
 
 		recordFile = new File(outputFile);
 		if (!recordFile.exists() || !recordFile.isFile()) {
@@ -116,7 +120,6 @@ public class WavRecorder implements RecorderContract.Recorder, RecorderContract.
 
 		if (isCapturing) {
 			isRecording = true;
-			startRecordingTimer();
 			if (recorderCallback != null) {
 				recorderCallback.onStartRecord();
 			}
@@ -127,9 +130,7 @@ public class WavRecorder implements RecorderContract.Recorder, RecorderContract.
 	@Override
 	public void pauseRecording() {
 		if (isRecording) {
-			pauseRecordingTimer();
-
-			isPaused = true;
+			isRecordingPaused = true;
 			if (recorderCallback != null) {
 				recorderCallback.onPauseRecord();
 			}
@@ -138,22 +139,20 @@ public class WavRecorder implements RecorderContract.Recorder, RecorderContract.
 
 	@Override
 	public void resumeRecording(){
-		if (isPaused) {
-			startRecordingTimer();
+		if (isRecordingPaused) {
 			recorder.startRecording();
 			if (recorderCallback != null) {
 				recorderCallback.onStartRecord();
 			}
-			isPaused = false;
+			isRecordingPaused = false;
 		}
 	}
 
 	@Override
 	public void stopRecording() {
-		if (recorder != null) {
+		if (isRecording && recorder != null) {
 			isRecording = false;
-			isPaused = false;
-			stopRecordingTimer();
+			isRecordingPaused = false;
 			Phonograph.setRecording(false);
 			if (recorderCallback != null) {
 				recorderCallback.onStopRecord(recordFile);
@@ -214,8 +213,8 @@ public class WavRecorder implements RecorderContract.Recorder, RecorderContract.
 	}
 
 	@Override
-	public boolean isPaused() {
-		return isPaused;
+	public boolean isRecordingPaused() {
+		return isRecordingPaused;
 	}
 
 	/** Stop monitoring, recording and release the hardware resources */
@@ -278,12 +277,18 @@ public class WavRecorder implements RecorderContract.Recorder, RecorderContract.
 			}, "AudioRecorder Capture Thread");
 
 			recordingThread.start();
+			startVisualizationTimer();
 
 			Timber.d("WaveRecorder: capturing");
 		}
 	}
 
 	private void stopCapturing(){
+		if (!isCapturing){
+			return;
+		}
+
+		stopVisualizationTimer();
 		isCapturing = false;
 		if (recordingThread != null){
 			recordingThread.interrupt();
@@ -305,7 +310,7 @@ public class WavRecorder implements RecorderContract.Recorder, RecorderContract.
 		long pauseSleepMillis = bufferMillis / 2;
 
 		while (isCapturing) {
-			if (isPaused){
+			if (isRecordingPaused){
 				try {
 					sleep(pauseSleepMillis);
 					continue;
@@ -435,27 +440,32 @@ public class WavRecorder implements RecorderContract.Recorder, RecorderContract.
 		return header;
 	}
 
-	private void startRecordingTimer() {
+	private void startVisualizationTimer() {
 		timerProgress = new Timer();
 		timerProgress.schedule(new TimerTask() {
 			@Override
 			public void run() {
 				if (recorderCallback != null && recorder != null) {
-					recorderCallback.onRecordProgress(progress, lastVal);
-					progress += PhonographConstants.VISUALIZATION_INTERVAL;
+					boolean isRecordingActive = isRecording && !isRecordingPaused;
+					recorderCallback.onProgress(
+							progress,
+							lastVal,
+							isRecordingActive
+					);
+					if(isRecordingActive){
+						progress += PhonographConstants.VISUALIZATION_INTERVAL;
+					}
 				}
 			}
 		}, 0, PhonographConstants.VISUALIZATION_INTERVAL);
 	}
 
-	private void stopRecordingTimer() {
-		timerProgress.cancel();
-		timerProgress.purge();
+	private void stopVisualizationTimer() {
+		if (timerProgress != null){
+			timerProgress.cancel();
+			timerProgress.purge();
+		}
 		progress = 0;
 	}
 
-	private void pauseRecordingTimer() {
-		timerProgress.cancel();
-		timerProgress.purge();
-	}
 }

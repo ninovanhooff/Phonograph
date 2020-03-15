@@ -40,7 +40,7 @@ public class PhonographConstants {
 	public static final int NAMING_DATE = 1;
 	//END-------------------- File-related constants --------------------------------------------
 
-	//BEGINNING-------------- Waveform visualisation constants ----------------------------------
+	//BEGINNING-------------- Waveform visualization constants ----------------------------------
 
 	/** Density pixel count per one second of time.
 	 *  Used for short records (shorter than {@link PhonographConstants#LONG_RECORD_THRESHOLD_SECONDS}) */
@@ -51,14 +51,14 @@ public class PhonographConstants {
 	public static final float WAVEFORM_WIDTH = 1.5f; //one and half of screen waveform width.
 
 	/** Threshold in second which defines when record is considered as long or short.
-	 *  For short and long records used a bit different visualisation algorithm. */
+	 *  For short and long records used a bit different visualization algorithm. */
 	public static final int LONG_RECORD_THRESHOLD_SECONDS = 20;
 
 	/** Count of grid lines on visible part of Waveform (actually lines count visible on screen).
-	 *  Used for long records visualisation algorithm. (longer than {@link PhonographConstants#LONG_RECORD_THRESHOLD_SECONDS} ) */
+	 *  Used for long records visualization algorithm. (longer than {@link PhonographConstants#LONG_RECORD_THRESHOLD_SECONDS} ) */
 	public static final int GRID_LINES_COUNT = 16;
 
-	//END-------------- Waveform visualisation constants ----------------------------------------
+	//END-------------- Waveform visualization constants ----------------------------------------
 
 	public static final int TIME_FORMAT_24H = 11;
 	public static final int TIME_FORMAT_12H = 12;
@@ -86,7 +86,7 @@ public class PhonographConstants {
 	public final static int RECORD_AUDIO_STEREO = 2;
 	public final static int RECORD_MAX_DURATION = 14400000; // 240 min 4 hours
 
-	/** Time interval for Recording progress visualisation. */
+	/** Time interval for Recording progress visualization. */
 	public final static int VISUALIZATION_INTERVAL = 1000/SHORT_RECORD_DP_PER_SECOND; //1000 mills/25 dp per sec
 
 	public final static int RECORD_BYTES_PER_SECOND = RECORD_ENCODING_BITRATE_48000 /8; //bits per sec converted to bytes per sec.

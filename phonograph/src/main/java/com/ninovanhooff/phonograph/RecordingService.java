@@ -89,7 +89,10 @@ public class RecordingService extends Service {
 			@Override public void onRecordingStopped(long id, File file) { }
 
 			@Override
-			public void onRecordingProgress(long mills, int amp) {
+			public void onProgress(long mills, int amp, boolean isRecording) {
+				if (!isRecording){
+					return;
+				}
 				if (!hasAvailableSpace()) {
 					AndroidUtils.runOnUIThread(new Runnable() {
 						@Override

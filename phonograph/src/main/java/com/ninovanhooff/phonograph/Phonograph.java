@@ -33,7 +33,7 @@ public class Phonograph {
 
     /**
      * Calculate density pixels per second for record duration.
-     * Used for visualisation waveform in view.
+     * Used for visualization waveform in view.
      * @param durationSec record duration in seconds.
      *                    In general, higher resolutions will be returned for shorter clips.
      */

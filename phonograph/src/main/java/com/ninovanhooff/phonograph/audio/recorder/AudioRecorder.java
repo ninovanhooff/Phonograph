@@ -40,7 +40,7 @@ public class AudioRecorder implements RecorderContract.Recorder {
 	private boolean isPrepared = false;
 	private boolean isRecording = false;
 	private boolean isPaused = false;
-	private Timer timerProgress;
+	private Timer visualizationTimer;
 	private long progress = 0;
 
 	private RecorderContract.RecorderCallback recorderCallback;
@@ -101,7 +101,7 @@ public class AudioRecorder implements RecorderContract.Recorder {
 			recorder.start();
 			isRecording = true;
 			Phonograph.setRecording(true);
-			startRecordingTimer();
+			startVisualizationTimer();
 			if (recorderCallback != null) {
 				recorderCallback.onStartRecord();
 			}
@@ -150,7 +150,7 @@ public class AudioRecorder implements RecorderContract.Recorder {
 	@Override
 	public void stopRecording() {
 		if (isRecording) {
-			stopRecordingTimer();
+			stopVisualizationTimer();
 			try {
 				recorder.stop();
 				Phonograph.setRecording(false);
@@ -183,36 +183,44 @@ public class AudioRecorder implements RecorderContract.Recorder {
 	}
 
 	@Override
-	public boolean isPaused() {
+	public boolean isRecordingPaused() {
 		return isPaused;
 	}
 
-	private void startRecordingTimer() {
-		timerProgress = new Timer();
-		timerProgress.schedule(new TimerTask() {
+	private void startVisualizationTimer() {
+		visualizationTimer = new Timer();
+		visualizationTimer.schedule(new TimerTask() {
 			@Override
 			public void run() {
 				if (recorderCallback != null && recorder != null) {
-					try {
-						recorderCallback.onRecordProgress(progress, recorder.getMaxAmplitude());
+					boolean isRecordingActive = isRecording && !isPaused;
+					try{
+						recorderCallback.onProgress(
+								progress,
+								recorder.getMaxAmplitude(),
+								isRecordingActive
+						);
 					} catch (IllegalStateException e) {
 						Timber.e(e);
 					}
-					progress += PhonographConstants.VISUALIZATION_INTERVAL;
+
+					if(isRecordingActive){
+						progress += PhonographConstants.VISUALIZATION_INTERVAL;
+					}
 				}
 			}
 		}, 0, PhonographConstants.VISUALIZATION_INTERVAL);
 	}
 
-	private void stopRecordingTimer() {
-		timerProgress.cancel();
-		timerProgress.purge();
+	private void stopVisualizationTimer() {
+		visualizationTimer.cancel();
+		visualizationTimer.purge();
 		progress = 0;
 	}
 
 	private void pauseRecordingTimer() {
-		timerProgress.cancel();
-		timerProgress.purge();
+		visualizationTimer.cancel();
+		visualizationTimer.purge();
 	}
 
 	private void emitAppException(AppException e){

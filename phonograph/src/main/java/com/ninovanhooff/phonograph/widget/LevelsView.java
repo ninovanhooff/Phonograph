@@ -24,20 +24,23 @@ public class LevelsView extends View {
     private static final int[] GRADIENT_COLORS = { Color.RED, Color.YELLOW, Color.GREEN};
     /** Strongest attenuation on the scale */
     private static final float DB_FLOOR = -48;
-    private static final long PEAK_HOLD_MILLIS = 300L;
+    private static final long PEAK_HOLD_MILLIS = 800L;
+
+    private float currentDb = DB_FLOOR;
+    private float peakDb = currentDb;
+
     private Rect viewBounds = new Rect();
-    /** Reference measurements of a dB label */
+    /** Textbounds of a dB label */
     private Rect textBounds = new Rect();
 
     private Paint barPaint;
     private Paint textPaint;
-    private LinearGradient gradient;
 
-    private float currentDb = -47;
-    private float peakDb = 0f;
     /** A timer which fires when the peak level should not be maintained any more */
     private Timer peakTimer;
     private int barWidth;
+
+    private float oneDp = AndroidUtils.dpToPx(1);
 
     public LevelsView(Context context) {
         this(context, null, 0);
@@ -65,7 +68,7 @@ public class LevelsView extends View {
         } else {
             currentDb = (currentDb + db) / 2;
         }
-        if (currentDb < peakDb) {
+        if (currentDb > peakDb) {
             peakDb = currentDb;
             if (peakTimer != null) {
                 peakTimer.cancel();
@@ -108,19 +111,22 @@ public class LevelsView extends View {
         super.onDraw(canvas);
 
         // left level bar
-        canvas.drawRect(getPaddingLeft(),dbYCoordinate(currentDb) - 1,getPaddingLeft() + barWidth,viewBounds.bottom - getPaddingBottom(), barPaint);
+        canvas.drawRect(getPaddingLeft(),dbYCoordinate(currentDb),getPaddingLeft() + barWidth,viewBounds.bottom - getPaddingBottom(), barPaint);
+
+        //peak level bar
+        canvas.drawRect(getPaddingLeft(),dbYCoordinate(peakDb) - oneDp * 2,getPaddingLeft() + barWidth + oneDp * 2,dbYCoordinate(peakDb), barPaint);
 
         float stepHeight;
-        for (int i = 0; i <= -DB_FLOOR; i += 12){
+        for (int i = 0; i <= -DB_FLOOR; i += 6){
             String text = Integer.toString(i);
             textPaint.getTextBounds(text, 0, text.length(), textBounds);
 
             stepHeight = dbYCoordinate(-i);
-            canvas.drawLine(
-                    getPaddingLeft() + barWidth + 4,
-                    stepHeight,
-                    viewBounds.width() / 2 - textBounds.width() / 2 - 4,
-                    stepHeight,
+            canvas.drawRect(
+                    getPaddingLeft() + barWidth + oneDp,
+                    stepHeight - oneDp * .5f,
+                    viewBounds.width() / 2 - textBounds.width() / 2 - oneDp,
+                    stepHeight + oneDp * .5f,
                     textPaint);
             canvas.drawText(
                     text,
@@ -138,7 +144,7 @@ public class LevelsView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         viewBounds.set(0, 0, w, h);
-        gradient = new LinearGradient(0, 0, w, h, GRADIENT_COLORS, null, Shader.TileMode.CLAMP);
+        LinearGradient gradient = new LinearGradient(0, 0, w, h, GRADIENT_COLORS, null, Shader.TileMode.CLAMP);
         barPaint.setShader(gradient);
     }
 }

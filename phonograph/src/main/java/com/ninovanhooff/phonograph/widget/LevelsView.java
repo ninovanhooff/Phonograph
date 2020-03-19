@@ -16,31 +16,47 @@ import com.ninovanhooff.phonograph.util.AndroidUtils;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.Nullable;
+import androidx.core.graphics.ColorUtils;
 
 import static java.lang.Math.log10;
 
 public class LevelsView extends View {
-    private static final int[] GRADIENT_COLORS = { Color.RED, Color.YELLOW, Color.GREEN};
-    /** Strongest attenuation on the scale */
-    private static final float DB_FLOOR = -48;
+    private static final int[] GRADIENT_COLORS = { Color.RED, Color.YELLOW, Color.GREEN}; //todo refine colors
+    /** Strongest attenuation on the scale, considered silent. */
+    private static final float DB_FLOOR = -48f;
     private static final long PEAK_HOLD_MILLIS = 1500L;
+    /** Limit above which clipping is assumed. The assumption here is that measurements are not
+     * accurate, so even levels below 0dB can be considered to clip */ 
+    private static final float CLIP_LIMIT = -3f;
+    /** For how long the clipping status should be shown after the signal stops clipping */
+    private static final long CLIP_HOLD_MILLIS = 3000L;
 
+    // per-channel properties
     private float currentDb = DB_FLOOR;
     private float peakDb = currentDb;
+    private boolean isClipping = false;
+    /** Fires when the peak level should not be maintained any more */
+    private Timer peakTimer;
+    /** Fires when the clipping status should not be maintained anymore */
+    private Timer clipTimer;
 
     private Rect viewBounds = new Rect();
-    /** Textbounds of a dB label */
+    /** Bounds of a dB label */
     private Rect textBounds = new Rect();
 
     private Paint barPaint;
     private Paint textPaint;
+    @ColorInt
+    private int textColor = Color.WHITE;  //todo styled color
 
-    /** A timer which fires when the peak level should not be maintained any more */
-    private Timer peakTimer;
     private int barWidth;
 
     private float oneDp = AndroidUtils.dpToPx(1);
+
+    /** Fires when no new level is set for some time */
+    private Timer decayTimer;
 
     public LevelsView(Context context) {
         this(context, null, 0);
@@ -68,22 +84,20 @@ public class LevelsView extends View {
         } else {
             currentDb = (currentDb * 6 + db) / 7;
         }
+        if (currentDb > CLIP_LIMIT){
+            isClipping = true;
+        }
+        
+        if (currentDb > CLIP_LIMIT){
+            isClipping = true;
+            resetClipTimer();
+        }
+        
         if (currentDb > peakDb) {
             peakDb = currentDb;
-            if (peakTimer != null) {
-                peakTimer.cancel();
-            }
-            peakTimer = new Timer();
-            peakTimer.schedule(
-                    new TimerTask() {
-                                   @Override
-                                   public void run() {
-                                       peakDb = currentDb;
-                                   }
-                               }
-                    , PEAK_HOLD_MILLIS);
+            resetPeakTimer();
         }
-        invalidate();
+        postInvalidate();
     }
 
     private void initialize() {
@@ -92,7 +106,7 @@ public class LevelsView extends View {
         textPaint = new TextPaint();
         textPaint.setTextSize(AndroidUtils.dpToPx(12));
         textPaint.setAntiAlias(true);
-        textPaint.setColor(Color.WHITE); //todo styled color
+        textPaint.setColor(textColor);
         int vPad = (int) AndroidUtils.dpToPx(12);
         int hPad = (int) AndroidUtils.dpToPx(12);
         setPadding(hPad, vPad, hPad, vPad); // todo define in xml or something
@@ -101,14 +115,18 @@ public class LevelsView extends View {
         barWidth = 40;
     }
 
-    private float convertAmpToDb(int amp){
-        amp = Math.abs(amp);
-        return (float) (20 * log10(amp / 32767.0d));
-    }
+
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
+        // fill bar area with clip color if clipping
+        if (isClipping){
+            textPaint.setColor(ColorUtils.setAlphaComponent(GRADIENT_COLORS[0], 127));
+            canvas.drawRect(getPaddingLeft(),dbYCoordinate(0f),getPaddingLeft() + barWidth,viewBounds.bottom - getPaddingBottom(), textPaint);
+            textPaint.setColor(textColor);
+        }
 
         // left level bar
         canvas.drawRect(getPaddingLeft(),dbYCoordinate(currentDb),getPaddingLeft() + barWidth,viewBounds.bottom - getPaddingBottom(), barPaint);
@@ -134,17 +152,81 @@ public class LevelsView extends View {
                     stepHeight - textBounds.exactCenterY(),
                     textPaint);
         }
-    }
 
-    private float dbYCoordinate(float db) {
-        return getPaddingTop() + db / DB_FLOOR * (viewBounds.height() - getPaddingTop() - getPaddingBottom());
+        if (currentDb > DB_FLOOR){
+            resetDecayTimer();
+        }
     }
 
     // called when the dimensions of the View change
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         viewBounds.set(0, 0, w, h);
-        LinearGradient gradient = new LinearGradient(0, 0, w, h, GRADIENT_COLORS, null, Shader.TileMode.CLAMP);
+        LinearGradient gradient = new LinearGradient(0, 0, w, h, GRADIENT_COLORS, null, Shader.TileMode.CLAMP); //todo positions
         barPaint.setShader(gradient);
+    }
+
+    private float convertAmpToDb(int amp){
+        amp = Math.abs(amp);
+        return (float) (20 * log10(amp / 32767.0d));
+    }
+
+    private float dbYCoordinate(float db) {
+        return getPaddingTop() + db / DB_FLOOR * (viewBounds.height() - getPaddingTop() - getPaddingBottom());
+    }
+
+    private void resetClipTimer() {
+        if (clipTimer != null) {
+            clipTimer.cancel();
+        }
+        clipTimer = new Timer();
+        clipTimer.schedule(
+                new TimerTask() {
+                    @Override
+                    public void run() {
+                        isClipping = false;
+                        postInvalidate();
+                    }
+                }
+                , CLIP_HOLD_MILLIS);
+    }
+
+    private void resetPeakTimer() {
+        if (peakTimer != null) {
+            peakTimer.cancel();
+        }
+        peakTimer = new Timer();
+        peakTimer.schedule(
+                new TimerTask() {
+                    @Override
+                    public void run() {
+                        peakDb = currentDb;
+                        postInvalidate();
+                    }
+                }
+                , PEAK_HOLD_MILLIS);
+    }
+
+    private void resetDecayTimer() {
+        if (decayTimer != null){
+            decayTimer.cancel();
+        }
+        decayTimer = new Timer();
+        decayTimer.schedule(
+                new TimerTask() {
+                    @Override
+                    public void run() {
+                        if (currentDb == DB_FLOOR){
+                            return;
+                        }
+                        if (Math.abs(currentDb - DB_FLOOR) < 1f){
+                            currentDb = DB_FLOOR;
+                            peakDb = DB_FLOOR;
+                            return;
+                        }
+                        setCurrentDb(DB_FLOOR); // simulate a silent input, which causes decay
+                    }
+                }
+                , 12L); // fire before the next frame @60fps
     }
 }

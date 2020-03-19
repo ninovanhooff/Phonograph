@@ -24,7 +24,7 @@ public class LevelsView extends View {
     private static final int[] GRADIENT_COLORS = { Color.RED, Color.YELLOW, Color.GREEN};
     /** Strongest attenuation on the scale */
     private static final float DB_FLOOR = -48;
-    private static final long PEAK_HOLD_MILLIS = 800L;
+    private static final long PEAK_HOLD_MILLIS = 1500L;
 
     private float currentDb = DB_FLOOR;
     private float peakDb = currentDb;
@@ -66,7 +66,7 @@ public class LevelsView extends View {
         if (db > currentDb){
             currentDb = db;
         } else {
-            currentDb = (currentDb + db) / 2;
+            currentDb = (currentDb * 6 + db) / 7;
         }
         if (currentDb > peakDb) {
             peakDb = currentDb;

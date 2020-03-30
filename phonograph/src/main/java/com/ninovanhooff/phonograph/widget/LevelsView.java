@@ -23,6 +23,9 @@ import androidx.core.graphics.ColorUtils;
 import static java.lang.Math.log10;
 
 public class LevelsView extends View {
+    /** Determines how slowly the meter level will decay after receiving a lower amplitude than the
+     * last observed. Higher values cause slower decay. */
+    public static int DEFAULT_HOLD_FACTOR = 50;
     private static final int[] GRADIENT_COLORS = { Color.RED, Color.YELLOW, Color.GREEN}; //todo refine colors
     /** Strongest attenuation on the scale, considered silent. */
     private static final float DB_FLOOR = -48f;
@@ -57,6 +60,7 @@ public class LevelsView extends View {
 
     /** Fires when no new level is set for some time */
     private Timer decayTimer;
+    private int holdFactor = LevelsView.DEFAULT_HOLD_FACTOR;
 
     public LevelsView(Context context) {
         this(context, null, 0);
@@ -82,7 +86,7 @@ public class LevelsView extends View {
         if (db > currentDb){
             currentDb = db;
         } else {
-            currentDb = (currentDb * 6 + db) / 7;
+            currentDb = (currentDb * holdFactor + db) / (holdFactor + 1);
         }
         if (currentDb > CLIP_LIMIT){
             isClipping = true;
@@ -98,6 +102,14 @@ public class LevelsView extends View {
             resetPeakTimer();
         }
         postInvalidate();
+    }
+
+
+    /** Determines how slowly the meter level will decay after receiving a lower amplitude than the
+     * last observed. Higher values cause slower decay. See {@link LevelsView#DEFAULT_HOLD_FACTOR}*/
+    @SuppressWarnings("unused") // API
+    public void setHoldFactor(int holdFactor) {
+        this.holdFactor = holdFactor;
     }
 
     private void initialize() {
@@ -129,7 +141,7 @@ public class LevelsView extends View {
         }
 
         // left level bar
-        canvas.drawRect(getPaddingLeft(),dbYCoordinate(currentDb),getPaddingLeft() + barWidth,viewBounds.bottom - getPaddingBottom(), barPaint);
+        canvas.drawRect(getPaddingLeft(),Math.round(dbYCoordinate(currentDb)),getPaddingLeft() + barWidth,viewBounds.bottom - getPaddingBottom(), barPaint);
 
         //peak level bar
         canvas.drawRect(getPaddingLeft(),dbYCoordinate(peakDb) - oneDp * 2,getPaddingLeft() + barWidth + oneDp * 2,dbYCoordinate(peakDb), barPaint);

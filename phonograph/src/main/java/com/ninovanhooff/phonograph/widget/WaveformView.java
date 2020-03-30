@@ -364,7 +364,7 @@ public class WaveformView extends View {
 
 		this.viewWidth = width;
 
-		screenShift = -playProgressPx;
+		//screenShift = -playProgressPx; //todo check whether disabling this doesn't break playback
 		waveformShift = screenShift + viewWidth/2;
 		prevScreenShift = screenShift;
 

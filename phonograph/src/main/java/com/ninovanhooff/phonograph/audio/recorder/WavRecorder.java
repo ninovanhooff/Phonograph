@@ -195,10 +195,10 @@ public class WavRecorder implements RecorderContract.Recorder, RecorderContract.
 	@Override
 	public void stopMonitoring() {
 		if (audioTrack != null) {
+			isMonitoring = false;
 			audioTrack.stop();
 			audioTrack.release();
 			audioTrack = null;
-			isMonitoring = false;
 			Timber.d("monitoring stopped");
 		}
 	}

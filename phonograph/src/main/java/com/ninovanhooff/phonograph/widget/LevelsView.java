@@ -25,7 +25,7 @@ import static java.lang.Math.log10;
 public class LevelsView extends View {
     /** Determines how slowly the meter level will decay after receiving a lower amplitude than the
      * last observed. Higher values cause slower decay. */
-    public static int DEFAULT_HOLD_FACTOR = 50;
+    public static int DEFAULT_HOLD_FACTOR = 10;
     private static final int[] GRADIENT_COLORS = { Color.RED, Color.YELLOW, Color.GREEN}; //todo refine colors
     /** Strongest attenuation on the scale, considered silent. */
     private static final float DB_FLOOR = -48f;
@@ -247,7 +247,7 @@ public class LevelsView extends View {
                             peakDb = DB_FLOOR;
                             return;
                         }
-                        setCurrentDb(DB_FLOOR); // simulate a silent input, which causes decay
+                        setCurrentDb(DB_FLOOR, false); // simulate a silent input, which causes decay
                     }
                 }
                 , 12L); // fire before the next frame @60fps

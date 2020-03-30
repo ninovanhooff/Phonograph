@@ -75,11 +75,19 @@ public class LevelsView extends View {
         initialize();
     }
 
-    public void setAmplitude(int amp){
-        setCurrentDb(convertAmpToDb(amp));
+    public void setAmplitude(int amp) {
+        setAmplitude(amp, true);
+    }
+
+    public void setAmplitude(int amp, boolean invalidate){
+        setCurrentDb(convertAmpToDb(amp), invalidate);
     }
 
     public void setCurrentDb(float db) {
+        setCurrentDb(db, true);
+    }
+
+    public void setCurrentDb(float db, boolean invalidate) {
         db = -Math.abs(db);
         db = Math.min(0, Math.max(DB_FLOOR, db));
         // smooth out short silences while keeping quick response to loudness
@@ -101,7 +109,10 @@ public class LevelsView extends View {
             peakDb = currentDb;
             resetPeakTimer();
         }
-        postInvalidate();
+
+        if (invalidate){
+            postInvalidate();
+        }
     }
 
 

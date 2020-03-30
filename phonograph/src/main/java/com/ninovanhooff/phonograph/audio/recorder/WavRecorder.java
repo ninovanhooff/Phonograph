@@ -334,11 +334,11 @@ public class WavRecorder implements RecorderContract.Recorder, RecorderContract.
 				audioTrack.write(data, 0, bufferSize);
 			}
 			if (AudioRecord.ERROR_INVALID_OPERATION != bytesRead) {
-				lastVal = (Math.abs((data[0]) + (data[1] << 8))
-						+ Math.abs((data[2]) + (data[3] << 8)))
-						+ (Math.abs((data[4]) + (data[5] << 8))
-						+ Math.abs((data[6]) + (data[7] << 8)));
-
+				lastVal = 0;
+				int i;
+				for (i = 0; i + 1 < data.length; i += 2){
+					lastVal = Math.max(lastVal, Math.abs(data[i] | (data[ i + 1] << 8)));
+				}
 				if (fos != null){
 					try {
 						fos.write(data);

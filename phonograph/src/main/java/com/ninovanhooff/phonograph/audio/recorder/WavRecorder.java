@@ -41,6 +41,9 @@ import static java.lang.Thread.sleep;
 
 public class WavRecorder implements RecorderContract.Recorder, RecorderContract.Monitor {
 
+	private int sampleRate = PhonographConstants.RECORD_SAMPLE_RATE_44100;
+	private int channelCount = 1;
+
 	private AudioRecord recorder = null;
 	private AudioTrack audioTrack = null;
 
@@ -60,15 +63,11 @@ public class WavRecorder implements RecorderContract.Recorder, RecorderContract.
 	/** Piping capture to audio out */
 	private volatile boolean isMonitoring = false;
 
-	private int channelCount = 1;
-
 	/** Value for recording used visualization. */
 	private int lastVal = 0;
 
 	private Timer timerProgress;
 	private long progress = 0;
-
-	private int sampleRate = PhonographConstants.RECORD_SAMPLE_RATE_44100;
 
 	private RecorderContract.RecorderCallback recorderCallback;
 
@@ -97,7 +96,6 @@ public class WavRecorder implements RecorderContract.Recorder, RecorderContract.
 		this.channelCount = channelCount;
 		//wav has no compression, so ignoring bitrate parameter
 		Timber.d("WavRecorder prepared");
-		startCapturing();
 	}
 
 	@Override

@@ -171,8 +171,19 @@ public class AudioRecorder implements RecorderContract.Recorder {
 	}
 
 	@Override
+	public void startVisualizing() {
+		// Not Implemented
+	}
+
+	@Override
+	public void stopVisualizing() {
+		// Not Implemented
+	}
+
+	@Override
 	public void release() {
 		if (isRecording){
+			stopVisualizationTimer();
 			stopRecording();
 		}
 	}

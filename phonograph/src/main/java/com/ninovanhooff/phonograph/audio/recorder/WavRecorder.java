@@ -62,6 +62,8 @@ public class WavRecorder implements RecorderContract.Recorder, RecorderContract.
 	private volatile boolean isRecordingPaused = false;
 	/** Piping capture to audio out */
 	private volatile boolean isMonitoring = false;
+	/** Calling RecorderCallback.onProgress to update recording amplitude and recording progress*/
+	private volatile boolean isVisualizing = false;
 
 	/** Value for recording used visualization. */
 	private int lastVal = 0;
@@ -202,6 +204,24 @@ public class WavRecorder implements RecorderContract.Recorder, RecorderContract.
 	}
 
 	@Override
+	public void startVisualizing() {
+		if (isVisualizing){
+			return;
+		}
+
+		if (!isCapturing){
+			startCapturing();
+		}
+
+		isVisualizing = true;
+	}
+
+	@Override
+	public void stopVisualizing() {
+		isVisualizing = false;
+	}
+
+	@Override
 	public boolean isRecording() {
 		return isRecording;
 	}
@@ -220,6 +240,7 @@ public class WavRecorder implements RecorderContract.Recorder, RecorderContract.
 	@Override
 	public void release(){
 		stopRecording();
+		stopVisualizing();
 		stopMonitoring();
 		stopCapturing();
 		Timber.d("WaveRecorder: released");

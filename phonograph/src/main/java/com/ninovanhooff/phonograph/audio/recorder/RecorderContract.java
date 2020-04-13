@@ -43,6 +43,9 @@ public interface RecorderContract {
 		void pauseRecording();
 		void resumeRecording();
 		void stopRecording();
+		/** Starts emitting live amplitude data via {@link RecorderCallback#onProgress(long, int, boolean)} onProgress()} */
+		void startVisualizing();
+		void stopVisualizing();
 		boolean isRecording();
 		boolean isRecordingPaused();
 	}

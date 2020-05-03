@@ -10,12 +10,15 @@ import com.ninovanhooff.phonograph.data.FileRepositoryImpl;
 import com.ninovanhooff.phonograph.data.PhonographPrefs;
 import com.ninovanhooff.phonograph.data.PhonographPrefsImpl;
 
+import androidx.annotation.Nullable;
+
 class PhonographInjector {
 
     private final Context context;
-    private PhonographColorMap colorMap;
+    private final PhonographColorMap colorMap;
+    private final PhonographPrefs prefs;
 
-    PhonographInjector(Context applicationContext) {
+    PhonographInjector(Context applicationContext, @Nullable PhonographPrefs prefs) {
         this.context = applicationContext;
         colorMap = new PhonographColorMap() {
             @Override
@@ -23,6 +26,12 @@ class PhonographInjector {
                 return R.color.md_blue_700;
             }
         };
+        if (prefs == null){
+            this.prefs = PhonographPrefsImpl.getInstance(context);
+        } else {
+            this.prefs = prefs;
+        }
+
     }
 
     public PhonographColorMap provideColorMap() {
@@ -30,7 +39,7 @@ class PhonographInjector {
     }
 
     PhonographPrefs providePrefs() {
-        return PhonographPrefsImpl.getInstance(context);
+        return prefs;
     }
 
     public FileRepository provideFileRepository() {

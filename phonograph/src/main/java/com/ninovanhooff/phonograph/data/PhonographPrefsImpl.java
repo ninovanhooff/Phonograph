@@ -28,7 +28,7 @@ import com.ninovanhooff.phonograph.util.FileUtil;
  */
 public class PhonographPrefsImpl implements PhonographPrefs {
 
-	private static final String PREF_NAME = "com.dimowner.phonograph.data.PhonographPrefsImpl";
+	private static final String PREF_NAME = "com.ninovanhooff.phonograph.data.PhonographPrefsImpl";
 
 	private static final String PREF_KEY_RECORD_COUNTER = "record_counter";
 

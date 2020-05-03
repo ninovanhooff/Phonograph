@@ -5,6 +5,9 @@ import android.content.Context;
 import android.os.Handler;
 
 import com.ninovanhooff.phonograph.data.FileRepository;
+import com.ninovanhooff.phonograph.data.PhonographPrefs;
+
+import androidx.annotation.Nullable;
 
 public class Phonograph {
 
@@ -20,8 +23,10 @@ public class Phonograph {
     /** Screen width in dp */
     private static float screenWidthDp = 0;
 
-    public static void initialize(Context applicationContext, Class<?> activityClass, AppRecorder appRecorder) {
-        injector = new PhonographInjector(applicationContext);
+    public static void initialize(
+            Context applicationContext, Class<?> activityClass, AppRecorder appRecorder,
+            @Nullable PhonographPrefs prefs) {
+        injector = new PhonographInjector(applicationContext, prefs);
         applicationHandler = new Handler(applicationContext.getMainLooper());
         intentActivityClass = activityClass;
         Phonograph.appRecorder = appRecorder;

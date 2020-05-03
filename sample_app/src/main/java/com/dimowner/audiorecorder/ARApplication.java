@@ -62,7 +62,7 @@ public class ARApplication extends Application {
 		PACKAGE_NAME = getApplicationContext().getPackageName();
 		applicationHandler = new Handler(getApplicationContext().getMainLooper());
 		injector = new Injector(getApplicationContext());
-		Phonograph.initialize(getApplicationContext(), MainActivity.class, injector.provideAppRecorder());
+		Phonograph.initialize(getApplicationContext(), MainActivity.class, injector.provideAppRecorder(), null);
 		Phonograph.setScreenWidthDp(AndroidUtils.pxToDp(AndroidUtils.getScreenWidth(getApplicationContext())));
 
 	}

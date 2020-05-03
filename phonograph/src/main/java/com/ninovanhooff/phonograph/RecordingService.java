@@ -32,8 +32,8 @@ public class RecordingService extends Service {
 
 	private final static String CHANNEL_DEFAULT_NAME = "Default";
 	private final static String CHANNEL_DEFAULT_ID = "com.dimowner.audiorecorder.NotificationId";
-	private final static int CHANNEL_DEFAULT_PRIORITY = NotificationCompat.PRIORITY_HIGH;
-	private final static int CHANNEL_DEFAULT_IMPORTANCE = NotificationManagerCompat.IMPORTANCE_HIGH;
+	private final static int CHANNEL_DEFAULT_PRIORITY = NotificationCompat.PRIORITY_DEFAULT;
+	private final static int CHANNEL_DEFAULT_IMPORTANCE = NotificationManagerCompat.IMPORTANCE_DEFAULT;
 
 	private final static String CHANNEL_ERRORS_NAME = "Errors";
 	private final static String CHANNEL_ERRORS_ID = "com.dimowner.audiorecorder.Errors";
